@@ -1,0 +1,50 @@
+Folder PATH listing for volume Windows
+Volume serial number is 448D-E336
+C:.
+¦   .gitignore
+¦   LICENSE
+¦   README.md
+¦   tree.txt
+¦   __init__.py
+¦   
++---datasets
+¦       README.md
+¦       
++---figures
+¦   +---fspl_anomaly_detection
+¦           auc-vs-noise_std.pdf
+¦           roc_curves-grid_size_l.pdf
+¦           roc_curves-noise_std_l.pdf
+¦           
++---notebooks
+¦       roc_curves_fspl.ipynb
+¦       
++---src
+    ¦   __init__.py
+    ¦   
+    +---anomaly_detection
+    ¦   ¦   anomaly_detection_utils.py
+    ¦   ¦   fspl_anomaly_detection.py
+    ¦   ¦   supervised_detection.py
+    ¦   ¦   unsupervised_detection.py
+    ¦   ¦   __init__.py
+    ¦   ¦   
+    ¦   +---conf
+    ¦           fspl_anomaly_detection.yaml
+    ¦           
+    +---dataset_generation
+    ¦   ¦   measurement_generation.py
+    ¦   ¦   pathloss_map_generation.py
+    ¦   ¦   radio_map_generation.py
+    ¦   ¦   
+    ¦   +---conf
+    ¦           measurement_generation.yaml
+    ¦           pathloss_map_generation.yaml
+    ¦           radio_map_generation.yaml
+    ¦           
+    +---utils
+            description_file_utils.py
+            pl_utils.py
+            radiomap_utils.py
+            __init__.py
+            
