@@ -91,6 +91,7 @@ class GCN_DTAware(nn.Module):
             Q-values for each node, masked for valid actions
         """
         loader, mask = state
+        mask = mask.to(device)
         
         for batch in loader:
             batch = batch.to(device)
@@ -316,8 +317,9 @@ class GCN_DTAgent:
                 obs = next_obs
                 valid_actions = next_valid
                 
-                # Optimize
-                self.optimize_model()
+                # Optimize every 4 steps (reduces overhead while maintaining learning)
+                if step_count % 4 == 0:
+                    self.optimize_model()
                 
                 if done:
                     self.episode_durations.append(t + 1)

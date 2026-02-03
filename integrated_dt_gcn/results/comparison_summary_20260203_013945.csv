@@ -1,0 +1,3 @@
+timestamp,model,episodes,training_time_min,avg_reward,success_rate,avg_path_length,avg_jammed_steps,avg_pdr
+20260203_013945,GCN + DT (7 features),3000,47.5,-0.566,0.84,7.91,0.31,1.0
+20260203_013945,GCN Baseline (4 features),3000,71.47,-1.303,0.84,9.75,0.43,1.0

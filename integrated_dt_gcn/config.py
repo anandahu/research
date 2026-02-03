@@ -5,10 +5,10 @@ import torch
 # Device configuration
 if torch.cuda.is_available():
     device = torch.device("cuda")
-    print(f"✅ Using GPU: {torch.cuda.get_device_name(0)}")
+    print(f"[OK] Using GPU: {torch.cuda.get_device_name(0)}")
 else:
     device = torch.device("cpu")
-    print("⚠️  CUDA not available. Using CPU! (Install torch with CUDA support)")
+    print("[WARNING] CUDA not available. Using CPU!")
 
 # Paths
 BRITE_FILE = "../RP15/50nodes.brite"
