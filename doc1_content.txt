@@ -1,0 +1,72 @@
+Related works  
+
+Recent developments in wireless mesh networks show a clear shift from fixed rule-based protocols to dynamic machine learning-driven techniques. This evolution is driven by the increasing complexity of network dynamics, including challenges such as node mobility, spectral interference, and fluctuating traffic loads.
+
+A. Reinforcement Learning and Graph Neural Networks in Routing
+Deep Reinforcement Learning (DRLR) and GNNs: In 2023 Pappone et al. proposed a deep reinforcement learning and GNN model that integrates GNNs multi agent Deep reinforcement Learning(RL). Their work contributed to one of the core drawback of RL such as generalization to new topologies was limited without retraining over numerous iterations.by encoding the network state using GNN, their model reflects the permutation-invariant structure of the graph, thus enables the agents to minimize flow collisions while adapting to topology changes dynamically.
+Similarly in 2025 Jin et al Researched Deep Reinforcement Learning Based Resilient Routing(DRLRR ) for urban emergency networks.to counter the overestimation bias of conventional Q-learning, they used Double Deep Q-Networks, enabling them to provide reliable route optimization despite excessive node degradation scenarios.  
+Graph Convolutional Networks (GCN): gained popularity in 2017 thanks to Kipf and Welling.  
+The objective was for the model to learn on graphs using an efficient spectral approximation of convolution. In this approach, each node's representation is iteratively refined by aggregating the features of its local neighbors, which are then normalized by the degrees of the related nodes. During convolution, the convolutional GCN assumes a constant graph structure and uses only the adjacency of the graph (i.e., structural connectivity) to determine aggregation of weights instead of learnt pairwise significance scores. With this architecture, information on graphs can be encoded in a computationally efficient manner. Formally, a GCN's layer-wise propagation rule is as follows:  
+H(l+1)=σ(D˜−12A˜D˜−12H(l)W(l))Hl+1=σD~−12A~D~−12HlWl
+
+
+Where:
+A˜=A+INA~=A+IN  is the adjacency matrix with added self-connections.
+D˜ D~ is the degree matrix of A˜
+W(l)Wl  is the layer-specific trainable weight matrix.
+𝜎 is the activation function (e.g., ReLU).
+
+Graph Attention Network(GAT): In 2018 Veličković et al. Developed GAT which introduces a more detailed architecture that is essential for robust routing,in contrast to GraphSAGE,which gives all neigbhours in a simple equal or fixed weights.GATs obtain attention coefficients aij by using a self-attention mechanism.aij which show how important neighbor j is to node i.
+
+
+αij=exp(LeakyReLU(aT−→[Whi→∣∣∣Whj→]))∑k∈N𝒾exp(LeakyReLU(aT−→[Whi→∣∣∣Whk−→]))αij=exp⁡LeakyReLUaT→Whi→|Whj→∑k∈𝒩𝒾exp⁡LeakyReLUaT→Whi→|Whk→
+
+In theory and practice, the GAT architecture handles many of the dynamic features of WMNs more effectively than GCN. Unlike GCN, which assigns uniform weights during aggregation, GAT selectively weights each neighbour's contribution through a learnable attention mechanism, making it particularly suited for environments where link reliability varies due to jamming or interference. This selective aggregation allows GAT to better capture the importance of high-quality, non-jammed links during routing, which is the core motivation for its adoption in this framework.
+B. Fault and Anomaly Detection 
+Understanding the present condition of the network has a direct impact on routing performance. It is important to determine whether a disruption is the consequence of a routine malfunction or something more intentional before making any routing decisions.
+Digital Twin for Radio Environments: What Krause et al. (2023) brought to the table was a rethinking of how anomaly detection works in radio environments. Rather than anchoring detection to patterns mined from past data, their system keeps a physics-based virtual replica of the network running alongside it in real time. A ray-tracing engine inside that replica works out what RSSI readings across each link ought to look like under normal conditions. Those calculated values become references. Any meaningful gap between predicted and measured signals gets flagged — no attack examples needed for training. Crucially, the framework can tell jamming apart from ordinary fading, which is exactly where conventional statistical detection tends to fall apart.
+
+C. Gap Analysis
+Pappone et al. (2023) built a solid routing foundation, yet the work overlooks the subtleties of physical layer threats by anchoring itself to standard network metrics. Krause et al. (2023) take a different angle leveraging digital twins for detection but deliberately stop at observation, leaving the door closed on any form of active network intervention.
+Existing work has yet to meaningfully explore the tight integration of these two systems particularly the idea of feeding high-fidelity anomaly scores from a Digital Twin directly into a Graph Attention Network (GAT) as live, dynamic features. This paper takes a step into that gap. The core proposition is that routing the Digital Twin's ground-truth awareness through the attention mechanism of a GAT-based reinforcement learning agent enables the network to build genuine resilience  one where interference is anticipated and routed around before packet loss has a chance to escalate.
+Experiments and results
+Experimental Setup
+To evaluate and establish the efficacy of the developed MA DT-GCN routing protocol, a comparative analysis was carried out between the developed MA DT-GCN and the traditional approach of using the GAT-based routing protocol. This was mainly carried out with the intention of determining the effect of incorporating the MA and DT information in the routing protocol for a 50-node wireless mesh network.
+In this study, two learning models were taken into consideration:
+1.GAT Baseline (4 Features): A single-agent-based GAT model utilizes basic information regarding a node, i.e., its routing state (source/destination flags), and link quality information (latency and bandwidth capacity), without considering cooperative agent interactions and digital twin information and jammer signals.
+2.MA DT-GCN (7 Features): The suggested model adds three more parameters — anomaly score, jamming probability, and neighbor jamming average — obtained by digital twin synchronization to the baseline feature set.
+To ensure fairness, we tested both models through 3,000 episodes on the same network. When handling interference, we wanted to assess how effective, dependable, and resilient they were. Four key variables were monitored in order to determine this: average reward, average path length (hop count), average success rate (packet delivery ratio), and average number of jammed steps per episode.
+
+
+
+Performance Analysis
+The findings show that across 3,000 episodes, the Multi-Agent DT-GCN model performs better than the basic GAT model. It performed well in spite of interference, trained far more quickly, and was notably more adept at spotting effective paths. An overview of the performance indicators for both models is given in Table 1.
+TABLE:1 Comparative Performance Metrics (3,000 Episodes)
+1. Reward and Routing Stability
+With the reward average of -2.435 instead of -12.452, the Multi-Agent DT-GCN far exceeded the baseline. This was also a clear example of the efficiency of the Digital Twin model in minimizing interference, paths, and the cost of unsuccessful transmissions. Unlike the baseline model, which was unable to select the best path due to its poor knowledge of the changes, the MA DT-GCN was able to avoid the high penalty zones due to the knowledge shared by 50 agents.
+However, owing to its poor understanding of the network dynamics, the baseline model most often selects suboptimal paths and is highly exposed to the cost of unsuccessful transmissions, thus resulting in a significantly lower average reward of -12.452.
+
+
+
+2. Path Efficiency and End-to-End Latency
+The MA DT-GCN was able to achieve an average path length of 11.01 hops, compared to 34.71 hops obtained by the GAT baseline, indicating a saving of 23.70 hops on average for each episode. This shows that the cooperative agents, who use the features provided by the Digital Twin such as jamming probability and anomaly score, are able to detect the shortest paths, thereby reducing the number of relay nodes, the overall queuing time, and the probability of loss.
+However, the GAT baseline, not having the knowledge of the nodes, sends the traffic through longer paths, thereby increasing the overall transmission time. By having the knowledge of the paths, the 50 agents that cooperate to send the traffic through the network using the proposed MA DT-GCN are able to send the traffic effectively, thereby avoiding the overloaded nodes.
+3. Jamming Avoidance and Network Robustness
+The Average Jammed Steps is a metric used to show the effectiveness of the jamming probability factor in the cooperative routing process. From the model, the MA DT-GCN was able to reduce the average jammed steps from 2.72 to 1.15, showing a reduction of 57.7%. This shows the effectiveness of the incorporation of real-time DT jamming information into the routing decision process.
+This major reduction shows the effectiveness of the proactive strategy of the model in the avoidance of interference zones and unreliable nodes with the use of the Digital Twin, ensuring the reliability of the link and the stability of the process of communication despite the presence of adversarial conditions. The capability of 50 cooperative agents to jointly identify and avoid the presence of jammed nodes on all routing paths also validates the effectiveness of the proposed MA DT-GCN under adversarial conditions.
+
+4.Convergence Behaviour and Training Efficiency
+The MA DT-GCN completed 3,000 training sessions in 35.5 minutes, whereas the GAT baseline required 75.2 minutes. This means that the MA DT-GCN was 52.8 percent faster, a notable improvement given that it was coordinating 50 agents at the same time, each with their own policy network. Despite this, the MA DT-GCN converged faster than the single-agent baseline, which might be attributable to the cooperative agents' shared experience replay mechanism. This enabled the agents to explore the state space more thoroughly at the same time, resulting in faster policy learning as compared to the baseline model.
+The MA DT-GCN model achieved a success rate of 96%, compared to the baseline model's 95%, demonstrating an advantage in reliable packet delivery. Furthermore, in all episodes where the MA DT-GCN model succeeds, the outcome is significantly better, with a higher average reward of -2.435 compared to the baseline model's average reward of -12.452, as well as a shorter average path length of 11.01 hops compared to the baseline model's average path length of 34.71 hops. This demonstrates that the MA DT-GCN model makes significantly better routing decisions than the baseline model across all measured performance indicators.
+
+5. Success Rate and Reliability
+Out of 3,000 routing episodes, the MA DT-GCN model had a 96% success rate, compared to the 95% of the GAT model. What is more interesting is the quality of routes generated. The MA DT-GCN model had an average reward of -2.435, whereas the baseline model had an average reward of -12.452. Furthermore, the routes were generated in 11.01 hops, whereas the baseline model had 34.71 hops.
+The reason for the poor performance of the baseline model is its lack of awareness of jamming signals and anomalies. As a result, it often ends up choosing routes that are long and exposed and are more likely to be jammed. However, the MA DT-GCN model, with its use of shared knowledge of 50 cooperative agents and information from the Digital Twin, avoids all these issues and makes better decisions for all conditions.
+
+6.Conclusion
+This paper proposes an integrated resilience architecture that leverages Digital Twin Modelling, Graph Attention Networks, and Multi-Agent Deep Q-Networks for adaptive, jamming-aware routing in Wireless Mesh Networks. The proposed MA DT-GCN model significantly outperformed the baseline across 3,000 training episodes while converging 52.8% faster.
+Future study might look at integrating transfer learning to allow the trained MA DT-GCN model to generalize across multiple wireless mesh topologies without having to retrain from scratch. Furthermore, installing this framework on real hardware testbeds with live radio interference would prove the Digital Twin's accuracy and practical usefulness beyond simulation.
+
+
+
+

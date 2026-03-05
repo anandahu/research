@@ -89,6 +89,7 @@ class HybridEnv(gym.Env):
         
         # Edge data for GNN
         self.edge_index = self._build_edge_index()
+        self.edge_attr = self._compute_edge_attr()
         
     def _build_edge_index(self) -> torch.Tensor:
         """Build edge index tensor for PyG."""
@@ -138,6 +139,9 @@ class HybridEnv(gym.Env):
         self.mesh_twin.update_link_weights(radio_map)
         self.graph = self.mesh_twin.graph
         
+        # Recompute edge attributes from DT-updated weights
+        self.edge_attr = self._compute_edge_attr()
+        
         # Get jammer info
         jammer_positions = self.dt_loader.get_jammer_positions(self.current_scenario_idx, self.dataset_nr)
         # Scale jammer positions to DT coordinates
@@ -163,7 +167,7 @@ class HybridEnv(gym.Env):
         node_features = self._compute_node_features()
         valid_actions = self._get_valid_actions()
         
-        return Data(x=node_features, edge_index=self.edge_index), {'valid_actions': valid_actions}
+        return Data(x=node_features, edge_index=self.edge_index, edge_attr=self.edge_attr), {'valid_actions': valid_actions}
     
     def step(self, action: int) -> Tuple[Data, float, bool, Dict]:
         """
@@ -184,7 +188,7 @@ class HybridEnv(gym.Env):
             reward = -1.0
             node_features = self._compute_node_features()
             valid_actions = self._get_valid_actions()
-            return Data(x=node_features, edge_index=self.edge_index), reward, False, {'valid_actions': valid_actions}
+            return Data(x=node_features, edge_index=self.edge_index, edge_attr=self.edge_attr), reward, False, {'valid_actions': valid_actions}
         
         # Move to next node
         self.path.append(next_node)
@@ -205,7 +209,7 @@ class HybridEnv(gym.Env):
         node_features = self._compute_node_features()
         valid_actions = self._get_valid_actions()
         
-        return Data(x=node_features, edge_index=self.edge_index), reward, done, {'valid_actions': valid_actions}
+        return Data(x=node_features, edge_index=self.edge_index, edge_attr=self.edge_attr), reward, done, {'valid_actions': valid_actions}
     
     def _compute_node_features(self) -> torch.Tensor:
         """
@@ -248,6 +252,22 @@ class HybridEnv(gym.Env):
         
         return x
     
+    def _compute_edge_attr(self) -> torch.Tensor:
+        """Compute edge attributes (weights) for PyG Data objects.
+        
+        Extracts DT-derived latency for each edge in the same order as edge_index.
+        This allows GATConv to use link quality during attention computation.
+        """
+        edges = list(self.graph.edges())
+        # Match edge_index order: forward edges + reverse edges
+        edge_weights = []
+        for u, v in edges:
+            edge_weights.append(self.graph[u][v]['weight'])
+        for u, v in edges:
+            edge_weights.append(self.graph[v][u]['weight'])  # reverse
+        
+        return torch.tensor(edge_weights, dtype=torch.float, device=device).unsqueeze(1)  # shape: (num_edges, 1)
+    
     def _get_valid_actions(self) -> torch.Tensor:
         """Get mask of valid actions (neighbor nodes)."""
         valid = torch.zeros((1, self.num_nodes), dtype=torch.bool, device=device)
@@ -255,6 +275,14 @@ class HybridEnv(gym.Env):
         for n in neighbors:
             valid[0, n] = True
         return valid
+    
+    def get_current_node(self) -> int:
+        """Get the current node the agent is at."""
+        return self.current_node
+    
+    def get_neighbor_count(self, node: int) -> int:
+        """Get number of neighbors for a given node."""
+        return len(list(self.graph.neighbors(node)))
     
     def get_scenario_info(self) -> Dict:
         """Get info about current scenario."""

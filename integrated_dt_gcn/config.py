@@ -43,3 +43,9 @@ BATCH_SIZE = 128
 GAMMA = 0.99
 TARGET_UPDATE = 14000
 LEARNING_RATE = 0.001
+
+# Multi-Agent parameters
+MA_REPLAY_SIZE = 20000     # Replay memory per agent (increased for stable Q-learning)
+MA_BATCH_SIZE = 32         # Smaller batch — agents see fewer transitions
+MA_TARGET_UPDATE = 10      # Sync target net every N episodes (was 1 — too aggressive)
+MA_EPS_DECAY = 1500        # Episodes for epsilon decay (faster convergence to exploitation)

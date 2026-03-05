@@ -9,6 +9,7 @@ import argparse
 import os
 import sys
 import time
+import random
 import torch
 import numpy as np
 import pandas as pd
@@ -23,18 +24,27 @@ from integrated_dt_gcn.brite_loader import BRITELoader
 from integrated_dt_gcn.dataset_loader import DTDatasetLoader
 from integrated_dt_gcn.digital_twin.anomaly_bridge import AnomalyBridge
 from integrated_dt_gcn.environment.hybrid_env import HybridEnv
-from integrated_dt_gcn.models.gcn_dt_aware import GCN_DTAware, GCN_DTAgent
+from integrated_dt_gcn.models.gat_dt_aware import GAT_DTAware, GAT_DTAgent
 
 
 def main(args):
     """Main training function."""
     
+    # Set random seeds for reproducibility (Fix Gap 2)
+    SEED = args.seed
+    random.seed(SEED)
+    np.random.seed(SEED)
+    torch.manual_seed(SEED)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(SEED)
+    
     print("=" * 60)
-    print("Digital Twin + GCN Integrated Training")
+    print("Digital Twin + GAT Integrated Training")
     print("=" * 60)
     print(f"Device: {device}")
     print(f"Episodes: {args.episodes}")
     print(f"Dataset: {args.dataset_nr}")
+    print(f"Random seed: {SEED}")
     print()
     
     # Paths
@@ -64,13 +74,13 @@ def main(args):
     print(f"  Node features: {NODE_FEATURE_DIM}")
     
     # 4. Create GCN model
-    print("\nCreating GCN_DTAware model...")
-    policy_net = GCN_DTAware(
+    print("\nCreating GAT_DTAware model...")
+    policy_net = GAT_DTAware(
         num_nodes=env.num_nodes,
         out_dim=env.num_nodes,
         node_feat_dim=NODE_FEATURE_DIM
     )
-    target_net = GCN_DTAware(
+    target_net = GAT_DTAware(
         num_nodes=env.num_nodes,
         out_dim=env.num_nodes,
         node_feat_dim=NODE_FEATURE_DIM
@@ -80,7 +90,7 @@ def main(args):
     print(f"  Parameters: {num_params:,}")
     
     # 5. Create agent
-    agent = GCN_DTAgent(
+    agent = GAT_DTAgent(
         num_nodes=env.num_nodes,
         policy_net=policy_net,
         target_net=target_net,
@@ -162,7 +172,7 @@ def save_metrics_to_csv(metrics: dict, num_episodes: int, elapsed_time: float):
     
     summary = {
         'timestamp': timestamp,
-        'model': 'GCN_DTAware',
+        'model': 'GAT_DTAware',
         'episodes': num_episodes,
         'training_time_min': round(elapsed_time / 60, 2),
         'avg_reward': round(np.mean(metrics['eps_reward']), 3),
@@ -241,10 +251,11 @@ def plot_metrics(metrics: dict):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Train DT + GCN integrated model")
+    parser = argparse.ArgumentParser(description="Train DT + GAT integrated model")
     parser.add_argument("--episodes", type=int, default=500, help="Number of training episodes")
     parser.add_argument("--dataset_nr", type=int, default=0, help="Dataset number (0-5)")
     parser.add_argument("--normal_samples", type=int, default=2000, help="Normal samples for anomaly training")
+    parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducibility")
     parser.add_argument("--save", action="store_true", help="Save trained model")
     parser.add_argument("--plot", action="store_true", help="Plot training metrics")
     
