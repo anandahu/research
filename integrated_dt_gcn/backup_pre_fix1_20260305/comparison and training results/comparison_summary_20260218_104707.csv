@@ -1,3 +1,0 @@
-timestamp,model,episodes,training_time_min,avg_reward,success_rate,avg_path_length,avg_jammed_steps,avg_pdr
-20260218_104707,Multi-Agent GCN+DT (50 agents),3000,53.09,-0.741,0.54,7.2,0.92,1.0
-20260218_104707,GCN Baseline (4 features),3000,67.37,-7.334,0.85,23.63,0.94,1.0

@@ -1,0 +1,147 @@
+# Chapter 1: Introduction
+
+## 1.1 Background
+
+Wireless communication networks have greatly influenced the advancement of interconnectivity of technology without a physical medium. The proliferation of wireless devices in the modern era has created an unprecedented demand for reliable, scalable, and resilient networking solutions. According to Cisco's Annual Internet Report, by 2023 there were more than 29 billion networked devices worldwide, with wireless and mobile devices accounting for over two-thirds of all networked traffic. This explosive growth has fundamentally transformed how networks are designed, managed, and secured.
+
+The evolution of wireless networking has progressed through several generations, from first-generation analog cellular systems in the 1980s to the current fifth-generation (5G) networks that promise ultra-reliable low-latency communication (URLLC), massive machine-type communication (mMTC), and enhanced mobile broadband (eMBB). Each generation has introduced new capabilities but also new challenges, particularly in terms of security and resilience. The open nature of the wireless medium — where signals propagate through free space and can be intercepted, jammed, or otherwise interfered with — makes wireless networks inherently more vulnerable than their wired counterparts.
+
+From industrial automation to disaster response, the need for networks that can self-organize, self-heal, and adapt to changing conditions has never been greater. The Internet of Things (IoT) paradigm, which envisions billions of interconnected smart devices, demands network architectures that can operate reliably in diverse and often hostile environments. Smart factories, autonomous vehicles, precision agriculture, and e-health applications all require wireless networks that can maintain performance guarantees even when subjected to interference, jamming, or physical damage.
+
+The convergence of artificial intelligence and networking has opened new avenues for addressing these challenges. Machine learning techniques, particularly deep reinforcement learning, have demonstrated remarkable capabilities in dynamic decision-making scenarios. When combined with graph-based learning methods that can naturally represent network topologies, these techniques offer a promising path toward truly intelligent and adaptive network management. Furthermore, the Digital Twin paradigm — maintaining a real-time virtual replica of a physical system — provides a powerful mechanism for environmental awareness and predictive analytics.
+
+This dissertation explores the integration of three cutting-edge technologies — Digital Twins, Graph Attention Networks, and Multi-Agent Deep Q-Networks — to create a comprehensive resilience framework for Wireless Mesh Networks. The proposed framework not only detects jamming attacks in real-time but also actively adapts routing strategies to maintain network performance under adversarial conditions. By bridging the gap between physical-layer awareness and network-layer routing decisions, the framework enables proactive resilience rather than reactive recovery.
+
+## 1.2 Wireless Mesh Networks
+
+Wireless Mesh Networks (WMNs) represent a class of wireless networks where nodes are interconnected in a mesh topology, enabling multi-hop communication. Unlike traditional point-to-point or star topology networks, WMNs offer several distinctive advantages that make them suitable for a wide range of applications. The IEEE 802.11s standard, published in 2011 as an amendment to IEEE 802.11, formally defines the architecture and protocols for wireless mesh networking within the Wi-Fi ecosystem.
+
+### 1.2.1 Architecture and Characteristics
+
+A WMN typically consists of three types of nodes:
+
+- **Mesh Routers:** Stationary nodes that form the backbone of the mesh network. They relay traffic between mesh clients and other mesh routers, providing multi-hop connectivity. Mesh routers typically have no power constraints and can use multiple radio interfaces.
+- **Mesh Clients:** End-user devices (laptops, smartphones, IoT sensors) that connect to the mesh network through mesh routers. Mesh clients may have limited computational resources and battery constraints.
+- **Mesh Gateways:** Specialized mesh routers that provide connectivity to external networks such as the Internet or enterprise networks. They serve as bridge points between the mesh network and traditional infrastructure.
+
+In a WMN, each node can communicate with multiple other nodes, creating redundant paths for data transmission. This multi-hop routing capability extends the coverage area far beyond what a single wireless device can achieve. The decentralized architecture of WMNs eliminates single points of failure, as the network can automatically reroute traffic around failed or compromised nodes. This self-healing capability makes WMNs particularly valuable in scenarios where network reliability is critical.
+
+The key characteristics that distinguish WMNs from other wireless network architectures include:
+
+- **Self-Organization:** Nodes can automatically discover neighbours, establish links, and form the mesh topology without manual configuration.
+- **Self-Healing:** When a node fails or a link degrades, the network can automatically reroute traffic through alternative paths.
+- **Multi-Hop Routing:** Data can traverse multiple intermediate nodes to reach its destination, extending coverage beyond the range of any single node.
+- **Redundant Paths:** The mesh topology provides multiple alternative routes between any source-destination pair, improving reliability and load balancing.
+- **Scalability:** Additional nodes can be easily added to extend coverage or increase capacity without requiring changes to the existing infrastructure.
+
+### 1.2.2 The Hybrid Wireless Mesh Protocol (HWMP)
+
+The IEEE 802.11s standard defines the Hybrid Wireless Mesh Protocol (HWMP) as the default path selection protocol for wireless mesh networks. HWMP combines two approaches:
+
+1. **Reactive Path Selection:** Similar to the Ad hoc On-Demand Distance Vector (AODV) protocol, reactive path selection discovers routes on demand. When a mesh node needs to communicate with another node, it initiates a path discovery process by broadcasting a Path Request (PREQ) message. The destination responds with a Path Reply (PREP) message, establishing a path through the network.
+
+2. **Proactive Tree-Based Routing:** A designated root mesh node periodically broadcasts proactive PREQ messages, establishing a tree-based routing structure. This ensures that all mesh nodes maintain a path to the root, which typically serves as a mesh gateway to external networks.
+
+While HWMP provides a functional baseline for mesh routing, it relies on a simple airtime link metric that considers the data rate and frame error rate of each link. This metric does not account for adversarial conditions such as jamming, nor does it consider the broader environmental context that a Digital Twin can provide. The limitations of HWMP under adversarial conditions motivate the need for more intelligent routing approaches.
+
+### 1.2.3 Applications
+
+WMNs find applications in numerous domains including:
+
+- **Disaster Response:** When existing infrastructure is destroyed by natural disasters such as earthquakes, floods, or hurricanes, WMNs can be rapidly deployed to establish communication networks for emergency responders. The self-organizing nature of mesh networks allows first responders to create ad hoc communication infrastructure within minutes.
+- **Industrial Automation:** WMNs provide reliable wireless connectivity for industrial IoT devices in manufacturing environments where wired connections may be impractical. The redundant paths offered by mesh topology ensure that critical control signals are delivered reliably even when individual links fail. Industry 4.0 applications increasingly rely on WMNs for connecting sensors, actuators, and controllers.
+- **Military Communications:** The decentralized and resilient nature of WMNs makes them suitable for tactical communications in hostile environments. Military mesh networks must withstand jamming, eavesdropping, and physical attacks while maintaining operational capability.
+- **Community Networking:** WMNs enable cost-effective internet access in rural and underserved areas by extending connectivity through mesh nodes. Projects such as Guifi.net in Spain and Freifunk in Germany demonstrate the viability of community mesh networks for bridging the digital divide.
+- **Smart Cities:** WMNs support various smart city applications including traffic monitoring, environmental sensing, video surveillance, and public safety systems. The ability to deploy mesh nodes on street furniture (lamp posts, traffic signals, bus shelters) enables ubiquitous urban connectivity.
+- **Healthcare:** Hospital mesh networks provide reliable wireless coverage for medical devices, patient monitoring systems, and staff communication. The self-healing property is particularly important in healthcare settings where communication failures can have life-threatening consequences.
+
+Despite these advantages, the very characteristics that make WMNs flexible also introduce vulnerabilities. The shared wireless medium, multi-hop routing, and dynamic topology create attack surfaces that malicious actors can exploit to disrupt network operations.
+
+## 1.3 Security Threats in Wireless Mesh Networks
+
+WMNs face a diverse range of security threats that can compromise the confidentiality, integrity, and availability of network services. These threats can be broadly categorized into passive attacks and active attacks.
+
+### 1.3.1 Passive Attacks
+
+Passive attacks involve monitoring and eavesdropping on network communications without actively disrupting network operations:
+
+- **Eavesdropping:** Unauthorized interception of data transmissions. Since wireless signals propagate through open space, any receiver within range can potentially capture transmitted data.
+- **Traffic Analysis:** Even when data is encrypted, an attacker can analyze traffic patterns (packet sizes, timing, source-destination pairs) to infer sensitive information about network operations.
+
+### 1.3.2 Active Attacks
+
+Active attacks involve deliberate interference with network operations:
+
+- **Jamming Attacks:** A jammer transmits high-power signals on the same frequency band used by the network, causing interference that degrades link quality and disrupts data transmission. Jamming can take several forms:
+  - *Constant Jamming:* The jammer continuously transmits a high-power signal, preventing any legitimate communication in the affected area.
+  - *Deceptive Jamming:* The jammer transmits seemingly legitimate packets to keep the channel busy, causing legitimate nodes to defer transmission.
+  - *Random Jamming:* The jammer alternates between jamming and sleeping states, making detection more difficult while still causing significant disruption.
+  - *Reactive Jamming:* The jammer only transmits when it detects legitimate network activity, making it particularly difficult to detect and counter.
+- **Sybil Attacks:** A malicious node creates multiple fake identities to gain disproportionate influence over the network, potentially subverting reputation systems and routing protocols.
+- **Blackhole and Greyhole Attacks:** A malicious node advertises itself as having the best route to a destination but then drops some or all forwarded packets.
+- **Wormhole Attacks:** Two colluding malicious nodes create a tunnel between distant parts of the network, disrupting routing by making distant nodes appear as neighbours.
+- **Denial of Service (DoS):** Various techniques to exhaust network resources (bandwidth, processing power, memory) and prevent legitimate users from accessing network services.
+
+The impact of jamming extends beyond the immediately affected links — it can cause cascading failures as routing protocols attempt to route traffic through jammed areas, leading to congestion and increased latency across the entire network. This dissertation specifically focuses on jamming attacks due to their severity and the difficulty of mitigating them using traditional approaches.
+
+## 1.4 Challenges in WMN Routing
+
+Routing in Wireless Mesh Networks presents several unique challenges that traditional routing protocols struggle to address effectively:
+
+**Dynamic Environment:** WMNs operate in dynamic environments where channel conditions, traffic loads, and network topology can change rapidly. Node mobility, varying interference levels, and fluctuating traffic patterns create a complex, non-stationary optimization problem. Traditional static routing protocols that rely on predefined rules cannot adapt quickly enough to these changes, resulting in suboptimal routing decisions and degraded performance.
+
+**Scalability:** As the number of nodes in a WMN increases, the routing problem becomes increasingly complex. The number of possible paths between any source-destination pair grows combinatorially, and mathematical optimization approaches that may work well for small networks face scalability limitations when applied to larger topologies. A 50-node network with 100 edges can have thousands of possible paths between two nodes, making exhaustive search infeasible for real-time routing.
+
+**Distributed Decision Making:** The decentralized nature of WMNs requires routing decisions to be made distributedly, with each node making local decisions based on limited information about the global network state. Centralized approaches that require global state information introduce single points of failure and communication overhead that defeats the purpose of mesh networking.
+
+**Quality of Service:** Many WMN applications require guaranteed Quality of Service (QoS) in terms of latency, bandwidth, and reliability. Maintaining QoS guarantees in the presence of jamming attacks and dynamic network conditions is extremely challenging. Different applications may have conflicting QoS requirements — for example, voice traffic requires low latency while file transfers require high throughput.
+
+**Cross-Layer Optimization:** Effective routing in adversarial environments requires information from multiple protocol layers. Physical-layer signal quality, MAC-layer interference measurements, and network-layer topology information must be jointly considered. Traditional layered protocol architectures do not facilitate this cross-layer information exchange.
+
+## 1.5 Problem Statement
+
+Traditional routing protocols for Wireless Mesh Networks, including AODV (Perkins et al., 2003), OLSR (Clausen and Jacquet, 2003), and HWMP (IEEE 802.11s), rely on reactive or proactive approaches that use fixed metrics such as hop count or link quality to determine routing paths. These protocols lack the ability to anticipate and respond to adversarial conditions, particularly jamming attacks. When a jammer is activated, these protocols can only react after packet loss has been detected, leading to significant delays and degraded performance during the adaptation period.
+
+While reinforcement learning-based routing approaches have shown promise, existing methods suffer from several limitations. First, many RL approaches treat the network as a simple state-action space without leveraging the graph structure of the network topology. Second, most approaches do not incorporate real-time environmental awareness, relying instead on packet-level feedback that provides limited information about the underlying causes of performance degradation. Third, single-agent RL approaches cannot effectively capture the distributed nature of routing decisions in WMNs.
+
+The core problem addressed in this dissertation is: **How can we design a routing framework for Wireless Mesh Networks that can proactively detect and adapt to jamming attacks in real-time, while leveraging the graph structure of the network and enabling distributed decision-making?**
+
+## 1.6 Objectives
+
+The primary objectives of this dissertation are as follows:
+
+1. **Design and implement a Digital Twin module** that maintains a real-time virtual replica of the physical network, enabling real-time anomaly detection and jamming analysis through comparison of expected and actual radio signals.
+2. **Develop a Graph Attention Network model** that leverages the graph structure of the network topology to generate node embeddings enriched with Digital Twin-derived features, enabling topology-aware routing decisions.
+3. **Implement a Multi-Agent Deep Q-Network framework** where each node in the network has its own learning agent, enabling distributed and cooperative routing decisions that respect the decentralized nature of WMNs.
+4. **Design an enhanced reward function** that incorporates anomaly scores, jamming penalties, and resilience bonuses to guide agents toward routes that are not only short but also resilient to jamming attacks.
+5. **Evaluate the proposed framework** through extensive simulation experiments comparing the multi-agent Digital Twin-enhanced model against a baseline GAT model without Digital Twin awareness.
+
+## 1.7 Scope of the Work
+
+This dissertation focuses on the design, implementation, and evaluation of a resilient routing framework for WMNs. The scope encompasses:
+
+- A 50-node wireless mesh network topology generated using the BRITE (Boston University Representative Internet Topology Generator) topology generator, following the Barabási-Albert preferential attachment model
+- Digital Twin-based anomaly detection and jamming analysis using the Digital Twin Radio Environment dataset developed by Krause et al. (2023)
+- Graph Attention Network-based state representation using PyTorch Geometric's GATConv implementation with edge attribute support
+- Multi-Agent Deep Q-Network with 50 independent agents, one per network node, coordinated through shared experience replay
+- Simulation-based evaluation over 3,000 training episodes with controlled jamming scenarios
+
+The work is limited to simulation-based evaluation and does not include deployment on physical hardware testbeds. The jamming model uses pre-generated radio maps rather than real-time radio measurements. The topology is static during training (nodes do not move), though the radio environment changes across episodes.
+
+## 1.8 Organization of the Dissertation
+
+The remainder of this dissertation is organized as follows:
+
+**Chapter 2: Related Works** provides a comprehensive review of existing literature in reinforcement learning for network routing, graph neural networks for networking applications, Digital Twin technologies for radio environments, and multi-agent systems in network optimization. A gap analysis identifies the specific contributions of this work relative to the state of the art.
+
+**Chapter 3: Dataset Description** describes the two primary datasets used in this work: the BRITE-generated network topology and the Digital Twin Radio Environment dataset. The chapter details the data formats, preprocessing steps, and statistical properties of each dataset.
+
+**Chapter 4: Methodology** presents the complete technical framework, including the Digital Twin module, Graph Attention Network architecture, Multi-Agent Deep Q-Network design, enhanced reward function, and training algorithm. Implementation details and the technology stack are also described.
+
+**Chapter 5: Results and Discussion** reports the experimental results comparing the proposed MA DT-GCN model against the GAT baseline. Detailed analysis is provided for reward convergence, path efficiency, jamming avoidance, training efficiency, and success rate. Phased training analysis and limitations are also discussed.
+
+**Chapter 6: Conclusion** summarizes the key contributions and findings of this dissertation.
+
+**Chapter 7: Future Work** outlines directions for future research, including dynamic topology support, real-time Digital Twin integration, advanced jamming models, and hardware testbed validation.
+
+---

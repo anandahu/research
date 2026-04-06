@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Resilient Routing in Wireless Mesh Networks using Digital Twin and GNN-Based Reinforcement Learning</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap');
+body {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12pt;
+  line-height: 1.5;
+  margin: 1in;
+  color: #000;
+  text-align: justify;
+}
+h1 { font-size: 20pt; text-align: center; margin-top: 40px; margin-bottom: 10px; }
+h2 { font-size: 16pt; margin-top: 30px; margin-bottom: 10px; page-break-after: avoid; }
+h3 { font-size: 14pt; margin-top: 20px; margin-bottom: 8px; }
+h4 { font-size: 12pt; margin-top: 15px; margin-bottom: 6px; font-style: italic; }
+.title-page {
+  text-align: center;
+  page-break-after: always;
+  padding-top: 150px;
+}
+.title-page h1 { font-size: 24pt; margin-bottom: 30px; line-height: 1.4; }
+.title-page p { font-size: 14pt; margin: 8px 0; }
+.title-page .subtitle { font-size: 16pt; margin-top: 40px; font-style: italic; }
+.page-break { page-break-after: always; }
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 15px 0;
+  font-size: 11pt;
+}
+th, td {
+  border: 1px solid #000;
+  padding: 6px 10px;
+  text-align: left;
+}
+th { background-color: #d9e2f3; font-weight: bold; }
+.caption {
+  text-align: center;
+  font-size: 11pt;
+  font-style: italic;
+  margin: 8px 0 20px 0;
+}
+.figure {
+  text-align: center;
+  margin: 20px 0;
+}
+.figure img {
+  max-width: 85%;
+  border: 1px solid #ccc;
+}
+.toc a { text-decoration: none; color: #000; }
+.toc { page-break-after: always; }
+.abstract { page-break-after: always; }
+.ref-list p { text-indent: -0.5in; padding-left: 0.5in; margin: 6px 0; }
+blockquote { margin: 10px 40px; font-style: italic; }
+.eq { text-align: center; margin: 15px 0; font-size: 13pt; }
+@media print {
+  body { margin: 1in; }
+  .page-break { page-break-after: always; }
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== TITLE PAGE ==================== -->
+<div class="title-page">
+<br><br><br>
+<h1>Resilient Routing in Wireless Mesh Networks<br>using Digital Twin and GNN-Based<br>Reinforcement Learning</h1>
+<br>
+<p class="subtitle">A Dissertation Report</p>
+<p class="subtitle">Submitted in partial fulfillment of the requirements for the degree of</p>
+<p style="font-size:16pt; font-weight:bold;">Master of Technology</p>
+<p style="font-size:14pt;">in</p>
+<p style="font-size:16pt; font-weight:bold;">Computer Science and Information Technology</p>
+<br><br>
+<p style="font-size:14pt;">Submitted by</p>
+<p style="font-size:16pt; font-weight:bold;">Anandakrishnan K V</p>
+<p style="font-size:14pt;">Under the guidance of</p>
+<p style="font-size:16pt; font-weight:bold;">Drupad M D</p>
+<br><br>
+<p style="font-size:14pt;">Department of Computer Science and IT</p>
+<p style="font-size:14pt;">School of Computing</p>
+<p style="font-size:14pt; font-weight:bold;">Amrita Vishwa Vidyapeetham</p>
+<p style="font-size:14pt;">Kochi, Kerala, India</p>
+<br>
+<p style="font-size:14pt;">March 2026</p>
+</div>
+
+<!-- ==================== CERTIFICATE ==================== -->
+<div class="page-break" style="text-align:center; padding-top:100px;">
+<h2 style="text-align:center;">CERTIFICATE</h2>
+<br>
+<p style="text-align:justify;">This is to certify that the dissertation entitled <b>"Resilient Routing in Wireless Mesh Networks using Digital Twin and GNN-Based Reinforcement Learning"</b> submitted by <b>Anandakrishnan K V</b> in partial fulfillment of the requirements for the award of the degree of Master of Technology in Computer Science and Information Technology to the Department of Computer Science and IT, School of Computing, Amrita Vishwa Vidyapeetham, Kochi is a bonafide record of the work carried out under our supervision and guidance.</p>
+<br><br><br><br>
+<table style="border:none; width:100%;">
+<tr style="border:none;">
+<td style="border:none; text-align:left; width:50%;"><b>Guide</b><br><br><br>Drupad M D<br>Department of CS &amp; IT<br>Amrita Vishwa Vidyapeetham</td>
+<td style="border:none; text-align:right; width:50%;"><b>Head of Department</b><br><br><br><br>Department of CS &amp; IT<br>Amrita Vishwa Vidyapeetham</td>
+</tr>
+</table>
+<br><br><br>
+<p>Place: Kochi</p>
+<p>Date: March 2026</p>
+</div>
+
+<!-- ==================== DECLARATION ==================== -->
+<div class="page-break" style="padding-top:80px;">
+<h2 style="text-align:center;">DECLARATION</h2>
+<br>
+<p>I hereby declare that the dissertation entitled <b>"Resilient Routing in Wireless Mesh Networks using Digital Twin and GNN-Based Reinforcement Learning"</b> submitted to the Department of Computer Science and IT, School of Computing, Amrita Vishwa Vidyapeetham, Kochi, in partial fulfillment of the requirements for the award of the degree of Master of Technology in Computer Science and Information Technology, is a record of original work done by me under the supervision and guidance of <b>Drupad M D</b>, Department of Computer Science and IT, School of Computing, Amrita Vishwa Vidyapeetham, Kochi.</p>
+<p>The results embodied in this dissertation have not been submitted to any other University or Institute for the award of any degree or diploma.</p>
+<br><br><br>
+<p>Place: Kochi<br>Date: March 2026</p>
+<br><br>
+<p style="text-align:right;"><b>Anandakrishnan K V</b></p>
+</div>
+
+<!-- ==================== ACKNOWLEDGEMENT ==================== -->
+<div class="page-break" style="padding-top:80px;">
+<h2 style="text-align:center;">ACKNOWLEDGEMENT</h2>
+<br>
+<p>I would like to express my sincere gratitude to my guide, <b>Drupad M D</b>, for his invaluable guidance, continuous support, and encouragement throughout the course of this research work. His insightful suggestions and constructive criticism have been instrumental in shaping this dissertation.</p>
+<p>I am grateful to the Head of the Department of Computer Science and IT, School of Computing, Amrita Vishwa Vidyapeetham, Kochi, for providing the necessary facilities and support for this research.</p>
+<p>I extend my thanks to all the faculty members of the Department of Computer Science and IT for their support and encouragement. I also wish to thank my fellow students for their cooperation and help during the course of this work.</p>
+<p>I am deeply indebted to my parents and family for their unconditional love, support, and encouragement that have always been a source of strength and motivation.</p>
+<p>Finally, I thank the Almighty for bestowing upon me the strength and perseverance to complete this work.</p>
+<br><br>
+<p style="text-align:right;"><b>Anandakrishnan K V</b></p>
+</div>
+
+<!-- ==================== ABSTRACT ==================== -->
+<div class="abstract" style="padding-top:60px;">
+<h2 style="text-align:center;">ABSTRACT</h2>
+<br>
+<p>A Wireless Mesh Network (WMN) is a communications network made up of multiple radio nodes organized in a mesh topology used for connecting dynamically with each other. Their flexibility in dynamic connectivity and multi-hop capabilities can attract major threats. Particularly, jamming attacks can severely degrade network performance by disrupting routing and data transmission. Traditional routing protocols lack the adaptability to operate effectively in such dynamic and hostile environments.</p>
+
+<p>This dissertation proposes an integrated resilience framework for WMNs that combines Digital Twin modelling, Graph Attention Networks (GAT), and Multi-Agent Deep Q-Networks (DQN). A Digital Twin simulates realistic network behaviour and jamming scenarios by maintaining a virtual copy of the physical network that is continuously updated with real-time radio environment data. The Digital Twin ingests environmental radio maps containing Received Signal Strength (RSS) measurements, which are linked to link-level performance indicators including latency and bandwidth capacity. Anomaly detection and jamming analysis modules augment the network graph with additional information, constructing a seven-dimensional feature vector for each node.</p>
+
+<p>A Graph Attention Network model captures the topological and traffic features by embedding the entire network topology through attention-based message passing between neighbouring nodes. The attention mechanism enables nodes to selectively focus on important neighbours based on their relevance to routing, facilitating the propagation of information about node failures and jamming attacks across the network. The output embeddings are used to estimate Q-values for routing decisions.</p>
+
+<p>A multi-agent deep Q-network utilizes these embeddings to learn adaptive routing strategies under varying jamming conditions. Each of the 50 nodes in the network has its own agent with independent policy and target networks, while sharing experiences through a shared replay memory pool. The framework uses an epsilon-greedy exploration strategy with an enhanced reward function that incorporates anomaly dampening, jamming penalties, and resilience bonuses.</p>
+
+<p>Experimental results demonstrate that the proposed Multi-Agent Digital Twin Graph Attention Network (MA DT-GCN) model significantly outperforms the single-agent GAT baseline across 3,000 training episodes. The MA DT-GCN achieved an average reward of −2.435 compared to the baseline's −12.452, reduced average path length from 34.71 hops to 11.01 hops, decreased average jammed steps from 2.72 to 1.15 (a 57.7% reduction), and converged 52.8% faster while maintaining a 96% success rate. These results validate the effectiveness of integrating Digital Twin information with multi-agent reinforcement learning for resilient routing in adversarial wireless mesh network environments.</p>
+
+<p><b>Keywords:</b> Digital Twin, Wireless Mesh Networks, Graph Attention Network, Deep Q-Network, Reinforcement Learning, Jamming Detection, Anomaly Detection, Resilient Routing, Multi-Agent Systems.</p>
+</div>
+
+<!-- ==================== TABLE OF CONTENTS ==================== -->
+<div class="toc">
+<h2 style="text-align:center;">TABLE OF CONTENTS</h2>
+<br>
+<table style="border:none; width:100%;">
+<tr style="border:none;"><td style="border:none;">Certificate</td><td style="border:none; text-align:right;">ii</td></tr>
+<tr style="border:none;"><td style="border:none;">Declaration</td><td style="border:none; text-align:right;">iii</td></tr>
+<tr style="border:none;"><td style="border:none;">Acknowledgement</td><td style="border:none; text-align:right;">iv</td></tr>
+<tr style="border:none;"><td style="border:none;">Abstract</td><td style="border:none; text-align:right;">v</td></tr>
+<tr style="border:none;"><td style="border:none;">List of Figures</td><td style="border:none; text-align:right;">viii</td></tr>
+<tr style="border:none;"><td style="border:none;">List of Tables</td><td style="border:none; text-align:right;">ix</td></tr>
+<tr style="border:none;"><td style="border:none;">List of Abbreviations</td><td style="border:none; text-align:right;">x</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>Chapter 1: Introduction</b></td><td style="border:none; text-align:right;">1</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;1.1 Background</td><td style="border:none; text-align:right;">1</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;1.2 Wireless Mesh Networks</td><td style="border:none; text-align:right;">2</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;1.3 Challenges in WMN Routing</td><td style="border:none; text-align:right;">3</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;1.4 Problem Statement</td><td style="border:none; text-align:right;">5</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;1.5 Objectives</td><td style="border:none; text-align:right;">6</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;1.6 Scope of the Work</td><td style="border:none; text-align:right;">7</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;1.7 Organization of the Report</td><td style="border:none; text-align:right;">8</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>Chapter 2: Literature Review</b></td><td style="border:none; text-align:right;">9</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;2.1 Reinforcement Learning in Network Routing</td><td style="border:none; text-align:right;">9</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;2.2 Graph Neural Networks for Networking</td><td style="border:none; text-align:right;">11</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;2.3 Digital Twin for Radio Environments</td><td style="border:none; text-align:right;">14</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;2.4 Multi-Agent Systems in Network Optimization</td><td style="border:none; text-align:right;">16</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;2.5 Gap Analysis</td><td style="border:none; text-align:right;">17</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>Chapter 3: System Design and Architecture</b></td><td style="border:none; text-align:right;">19</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;3.1 System Overview</td><td style="border:none; text-align:right;">19</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;3.2 Digital Twin Module</td><td style="border:none; text-align:right;">21</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;3.3 Graph Attention Network</td><td style="border:none; text-align:right;">25</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;3.4 Multi-Agent Deep Q-Network</td><td style="border:none; text-align:right;">28</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;3.5 Reward Function Design</td><td style="border:none; text-align:right;">31</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;3.6 Training Algorithm</td><td style="border:none; text-align:right;">33</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>Chapter 4: Implementation</b></td><td style="border:none; text-align:right;">35</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;4.1 Technology Stack</td><td style="border:none; text-align:right;">35</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;4.2 Module Architecture</td><td style="border:none; text-align:right;">36</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;4.3 Data Pipeline</td><td style="border:none; text-align:right;">38</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;4.4 Environment Setup</td><td style="border:none; text-align:right;">39</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;4.5 Model Training Pipeline</td><td style="border:none; text-align:right;">40</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>Chapter 5: Experiments and Results</b></td><td style="border:none; text-align:right;">42</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;5.1 Experimental Setup</td><td style="border:none; text-align:right;">42</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;5.2 Performance Metrics</td><td style="border:none; text-align:right;">43</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;5.3 Reward and Routing Stability</td><td style="border:none; text-align:right;">44</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;5.4 Path Efficiency Analysis</td><td style="border:none; text-align:right;">46</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;5.5 Jamming Avoidance Analysis</td><td style="border:none; text-align:right;">47</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;5.6 Convergence and Training Efficiency</td><td style="border:none; text-align:right;">48</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;5.7 Success Rate and Reliability</td><td style="border:none; text-align:right;">49</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;5.8 Summary of Results</td><td style="border:none; text-align:right;">50</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>Chapter 6: Conclusion and Future Work</b></td><td style="border:none; text-align:right;">52</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;6.1 Conclusion</td><td style="border:none; text-align:right;">52</td></tr>
+<tr style="border:none;"><td style="border:none;">&emsp;6.2 Future Work</td><td style="border:none; text-align:right;">53</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>References</b></td><td style="border:none; text-align:right;">55</td></tr>
+</table>
+</div>
+
+<!-- ==================== LIST OF FIGURES ==================== -->
+<div class="page-break">
+<h2 style="text-align:center;">LIST OF FIGURES</h2>
+<br>
+<table style="border:none; width:100%;">
+<tr style="border:none;"><td style="border:none;">Figure 1.1: Wireless Mesh Network topology example</td><td style="border:none; text-align:right;">3</td></tr>
+<tr style="border:none;"><td style="border:none;">Figure 3.1: Overall system architecture of the MA DT-GCN framework</td><td style="border:none; text-align:right;">20</td></tr>
+<tr style="border:none;"><td style="border:none;">Figure 3.2: Digital Twin module architecture</td><td style="border:none; text-align:right;">22</td></tr>
+<tr style="border:none;"><td style="border:none;">Figure 3.3: GAT attention coefficient computation</td><td style="border:none; text-align:right;">26</td></tr>
+<tr style="border:none;"><td style="border:none;">Figure 3.4: Enhanced reward function design</td><td style="border:none; text-align:right;">32</td></tr>
+<tr style="border:none;"><td style="border:none;">Figure 4.1: Module dependency architecture</td><td style="border:none; text-align:right;">37</td></tr>
+<tr style="border:none;"><td style="border:none;">Figure 5.1: Simulated 50-node WMN topology</td><td style="border:none; text-align:right;">42</td></tr>
+<tr style="border:none;"><td style="border:none;">Figure 5.2: Reward convergence comparison over 3,000 episodes</td><td style="border:none; text-align:right;">45</td></tr>
+<tr style="border:none;"><td style="border:none;">Figure 5.3: Path length comparison over 3,000 episodes</td><td style="border:none; text-align:right;">46</td></tr>
+<tr style="border:none;"><td style="border:none;">Figure 5.4: Jammed steps comparison over 3,000 episodes</td><td style="border:none; text-align:right;">47</td></tr>
+<tr style="border:none;"><td style="border:none;">Figure 5.5: Training time comparison</td><td style="border:none; text-align:right;">48</td></tr>
+<tr style="border:none;"><td style="border:none;">Figure 5.6: Success rate and PDR comparison</td><td style="border:none; text-align:right;">49</td></tr>
+<tr style="border:none;"><td style="border:none;">Figure 5.7: Combined comparison results summary</td><td style="border:none; text-align:right;">51</td></tr>
+</table>
+</div>
+
+<!-- ==================== LIST OF TABLES ==================== -->
+<div class="page-break">
+<h2 style="text-align:center;">LIST OF TABLES</h2>
+<br>
+<table style="border:none; width:100%;">
+<tr style="border:none;"><td style="border:none;">Table 2.1: Summary of related works</td><td style="border:none; text-align:right;">18</td></tr>
+<tr style="border:none;"><td style="border:none;">Table 3.1: Seven-dimensional node feature vector</td><td style="border:none; text-align:right;">24</td></tr>
+<tr style="border:none;"><td style="border:none;">Table 3.2: GAT model architecture parameters</td><td style="border:none; text-align:right;">27</td></tr>
+<tr style="border:none;"><td style="border:none;">Table 3.3: DQN hyperparameters</td><td style="border:none; text-align:right;">30</td></tr>
+<tr style="border:none;"><td style="border:none;">Table 3.4: Reward function parameters</td><td style="border:none; text-align:right;">32</td></tr>
+<tr style="border:none;"><td style="border:none;">Table 4.1: Technology stack</td><td style="border:none; text-align:right;">35</td></tr>
+<tr style="border:none;"><td style="border:none;">Table 5.1: Comparative performance metrics (3,000 episodes)</td><td style="border:none; text-align:right;">43</td></tr>
+<tr style="border:none;"><td style="border:none;">Table 5.2: Detailed improvement analysis</td><td style="border:none; text-align:right;">50</td></tr>
+</table>
+</div>
+
+<!-- ==================== LIST OF ABBREVIATIONS ==================== -->
+<div class="page-break">
+<h2 style="text-align:center;">LIST OF ABBREVIATIONS</h2>
+<br>
+<table style="border:none; width:80%; margin:auto;">
+<tr style="border:none;"><td style="border:none; width:30%;"><b>WMN</b></td><td style="border:none;">Wireless Mesh Network</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>DT</b></td><td style="border:none;">Digital Twin</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>GNN</b></td><td style="border:none;">Graph Neural Network</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>GAT</b></td><td style="border:none;">Graph Attention Network</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>GCN</b></td><td style="border:none;">Graph Convolutional Network</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>DQN</b></td><td style="border:none;">Deep Q-Network</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>DRL</b></td><td style="border:none;">Deep Reinforcement Learning</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>RL</b></td><td style="border:none;">Reinforcement Learning</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>MDP</b></td><td style="border:none;">Markov Decision Process</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>DDQN</b></td><td style="border:none;">Double Deep Q-Network</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>MA DT-GCN</b></td><td style="border:none;">Multi-Agent Digital Twin Graph Convolutional Network</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>RSS</b></td><td style="border:none;">Received Signal Strength</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>RSSI</b></td><td style="border:none;">Received Signal Strength Indicator</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>PDR</b></td><td style="border:none;">Packet Delivery Ratio</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>QoS</b></td><td style="border:none;">Quality of Service</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>IoT</b></td><td style="border:none;">Internet of Things</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>PyG</b></td><td style="border:none;">PyTorch Geometric</td></tr>
+<tr style="border:none;"><td style="border:none;"><b>BRITE</b></td><td style="border:none;">Boston University Representative Internet Topology Generator</td></tr>
+</table>
+</div>
+
+
+<!-- ==================== CHAPTER 1: INTRODUCTION ==================== -->
+<h1>CHAPTER 1</h1>
+<h2>INTRODUCTION</h2>
+
+<h3>1.1 Background</h3>
+<p>Wireless communication networks have greatly influenced the advancement of interconnectivity of technology without a physical medium. The proliferation of wireless devices in the modern era has created an unprecedented demand for reliable, scalable, and resilient networking solutions. From industrial automation to disaster response, the need for networks that can self-organize, self-heal, and adapt to changing conditions has never been greater. However, the open nature of wireless communication channels introduces significant security challenges, particularly in the form of jamming attacks that can disrupt normal network operations.</p>
+
+<p>The convergence of artificial intelligence and networking has opened new avenues for addressing these challenges. Machine learning techniques, particularly deep reinforcement learning, have demonstrated remarkable capabilities in dynamic decision-making scenarios. When combined with graph-based learning methods that can naturally represent network topologies, these techniques offer a promising path toward truly intelligent and adaptive network management.</p>
+
+<p>This dissertation explores the integration of three cutting-edge technologies — Digital Twins, Graph Attention Networks, and Multi-Agent Deep Q-Networks — to create a comprehensive resilience framework for Wireless Mesh Networks. The proposed framework not only detects jamming attacks in real-time but also actively adapts routing strategies to maintain network performance under adversarial conditions.</p>
+
+<h3>1.2 Wireless Mesh Networks</h3>
+<p>Wireless Mesh Networks (WMNs) represent a class of wireless networks where nodes are interconnected in a mesh topology, enabling multi-hop communication. Unlike traditional point-to-point or star topology networks, WMNs offer several distinctive advantages that make them suitable for a wide range of applications.</p>
+
+<p>In a WMN, each node can communicate with multiple other nodes, creating redundant paths for data transmission. This multi-hop routing capability extends the coverage area far beyond what a single wireless device can achieve. The decentralized architecture of WMNs eliminates single points of failure, as the network can automatically reroute traffic around failed or compromised nodes. This self-healing capability makes WMNs particularly valuable in scenarios where network reliability is critical.</p>
+
+<p>WMNs find applications in numerous domains including:</p>
+<ul>
+<li><b>Disaster Response:</b> When existing infrastructure is destroyed, WMNs can be rapidly deployed to establish communication networks for emergency responders.</li>
+<li><b>Industrial Automation:</b> WMNs provide reliable wireless connectivity for industrial IoT devices in manufacturing environments where wired connections may be impractical.</li>
+<li><b>Military Communications:</b> The decentralized and resilient nature of WMNs makes them suitable for tactical communications in hostile environments.</li>
+<li><b>Community Networking:</b> WMNs enable cost-effective internet access in rural and underserved areas by extending connectivity through mesh nodes.</li>
+<li><b>Smart Cities:</b> WMNs support various smart city applications including traffic monitoring, environmental sensing, and public safety systems.</li>
+</ul>
+
+<p>Despite these advantages, the very characteristics that make WMNs flexible also introduce vulnerabilities. The shared wireless medium, multi-hop routing, and dynamic topology create attack surfaces that malicious actors can exploit to disrupt network operations.</p>
+
+<div class="figure">
+<img src="network_topology.png" alt="Network Topology" style="max-width:70%;">
+<p class="caption">Figure 1.1: Example of a Wireless Mesh Network topology showing interconnected nodes and multi-hop routing paths</p>
+</div>
+
+<h3>1.3 Challenges in WMN Routing</h3>
+<p>Routing in Wireless Mesh Networks presents several unique challenges that traditional routing protocols struggle to address effectively:</p>
+
+<h4>1.3.1 Jamming Attacks</h4>
+<p>Jamming attacks represent one of the most severe threats to WMN operations. A jammer transmits high-power signals on the same frequency band used by the network, causing interference that degrades link quality and disrupts data transmission. Jamming can be constant, deceptive, random, or reactive, each requiring different detection and mitigation strategies. The impact of jamming extends beyond the immediately affected links — it can cause cascading failures as routing protocols attempt to route traffic through jammed areas, leading to congestion and increased latency across the entire network.</p>
+
+<h4>1.3.2 Dynamic Environment</h4>
+<p>WMNs operate in dynamic environments where channel conditions, traffic loads, and network topology can change rapidly. Node mobility, varying interference levels, and fluctuating traffic patterns create a complex, non-stationary optimization problem. Traditional static routing protocols that rely on predefined rules cannot adapt quickly enough to these changes, resulting in suboptimal routing decisions and degraded performance.</p>
+
+<h4>1.3.3 Scalability</h4>
+<p>As the number of nodes in a WMN increases, the routing problem becomes increasingly complex. Mathematical optimization approaches that may work well for small networks face scalability limitations when applied to larger topologies. The computational overhead of maintaining routing tables and computing optimal paths grows significantly with network size, making centralized approaches impractical for large-scale deployments.</p>
+
+<h4>1.3.4 Distributed Decision Making</h4>
+<p>The decentralized nature of WMNs requires routing decisions to be made distributedly, with each node making local decisions based on limited information about the global network state. Centralized routing approaches that require a single entity to collect and process information from all nodes contradict the fundamental design principles of WMNs and introduce scalability bottlenecks and single points of failure.</p>
+
+<h4>1.3.5 Quality of Service</h4>
+<p>Many WMN applications require guaranteed Quality of Service (QoS) in terms of latency, bandwidth, and reliability. Maintaining QoS guarantees in the presence of jamming attacks and dynamic network conditions is extremely challenging. The routing protocol must balance multiple competing objectives — minimizing latency, maximizing throughput, avoiding jammed areas, and ensuring reliable delivery — simultaneously.</p>
+
+<h3>1.4 Problem Statement</h3>
+<p>Traditional routing protocols for Wireless Mesh Networks, including AODV, OLSR, and HWMP, rely on reactive or proactive approaches that use fixed metrics such as hop count or link quality to determine routing paths. These protocols lack the ability to anticipate and respond to adversarial conditions, particularly jamming attacks. When a jammer is activated, these protocols can only react after packet loss has been detected, leading to significant delays and degraded performance during the adaptation period.</p>
+
+<p>While reinforcement learning-based routing approaches have shown promise, existing methods suffer from several limitations. First, many RL approaches treat the network as a simple state-action space without leveraging the graph structure of the network topology. Second, most approaches do not incorporate real-time environmental awareness, relying instead on packet-level feedback that provides limited information about the underlying causes of performance degradation. Third, single-agent RL approaches cannot effectively capture the distributed nature of routing decisions in WMNs.</p>
+
+<p>The core problem addressed in this dissertation is: <b>How can we design a routing framework for Wireless Mesh Networks that can proactively detect and adapt to jamming attacks in real-time, while leveraging the graph structure of the network and enabling distributed decision-making?</b></p>
+
+<h3>1.5 Objectives</h3>
+<p>The primary objectives of this dissertation are as follows:</p>
+<ol>
+<li><b>Design and implement a Digital Twin module</b> that maintains a real-time virtual replica of the physical network, enabling real-time anomaly detection and jamming analysis through comparison of expected and actual radio signals.</li>
+<li><b>Develop a Graph Attention Network model</b> that leverages the graph structure of the network topology to generate node embeddings enriched with Digital Twin-derived features, enabling topology-aware routing decisions.</li>
+<li><b>Implement a Multi-Agent Deep Q-Network framework</b> where each node in the network has its own learning agent, enabling distributed and cooperative routing decisions that respect the decentralized nature of WMNs.</li>
+<li><b>Design an enhanced reward function</b> that incorporates anomaly scores, jamming penalties, and resilience bonuses to guide agents toward routes that are not only short but also resilient to jamming attacks.</li>
+<li><b>Evaluate the proposed framework</b> through extensive simulation experiments comparing the multi-agent Digital Twin-enhanced model against a baseline GAT model without Digital Twin awareness.</li>
+</ol>
+
+<h3>1.6 Scope of the Work</h3>
+<p>This dissertation focuses on the design, implementation, and evaluation of a resilient routing framework for WMNs. The scope encompasses:</p>
+<ul>
+<li>A 50-node wireless mesh network topology generated using the BRITE (Boston University Representative Internet Topology Generator) topology generator</li>
+<li>Digital Twin-based anomaly detection and jamming analysis using datasets provided by the Digital Twin Radio Environment framework</li>
+<li>Graph Attention Network-based state representation using PyTorch Geometric's GATConv implementation</li>
+<li>Multi-Agent Deep Q-Network with 50 independent agents, one per network node</li>
+<li>Simulation-based evaluation over 3,000 training episodes</li>
+</ul>
+<p>The work is limited to simulation-based evaluation and does not include deployment on physical hardware testbeds. The jamming model uses pre-generated radio maps rather than real-time radio measurements.</p>
+
+<h3>1.7 Organization of the Report</h3>
+<p>The remainder of this dissertation report is organized as follows:</p>
+<p><b>Chapter 2: Literature Review</b> provides a comprehensive review of related work in reinforcement learning for network routing, graph neural networks, digital twins for radio environments, and multi-agent systems, culminating in a gap analysis that motivates the proposed approach.</p>
+<p><b>Chapter 3: System Design and Architecture</b> presents the detailed design of the proposed MA DT-GCN framework, including the Digital Twin module, Graph Attention Network, Multi-Agent DQN, reward function, and training algorithm.</p>
+<p><b>Chapter 4: Implementation</b> describes the technology stack, module architecture, data pipeline, and training pipeline used to realize the proposed framework.</p>
+<p><b>Chapter 5: Experiments and Results</b> presents the experimental setup, evaluation metrics, and detailed analysis of the comparative performance between the proposed MA DT-GCN model and the GAT baseline.</p>
+<p><b>Chapter 6: Conclusion and Future Work</b> summarizes the key contributions of this work and identifies directions for future research.</p>
+
+<div class="page-break"></div>
+
+<!-- ==================== CHAPTER 2: LITERATURE REVIEW ==================== -->
+<h1>CHAPTER 2</h1>
+<h2>LITERATURE REVIEW</h2>
+
+<p>This chapter provides a comprehensive review of the existing literature in the areas that are relevant to this dissertation. The review covers four main areas: reinforcement learning in network routing, graph neural networks for networking, digital twins for radio environments, and multi-agent systems in network optimization. The chapter concludes with a gap analysis that identifies the research gaps addressed by the proposed framework.</p>
+
+<h3>2.1 Reinforcement Learning in Network Routing</h3>
+<p>Routing in Wireless Mesh Networks is typically modeled as a Markov Decision Process (MDP), which provides a mathematical framework for decision-making in stochastic environments. In this formulation, the network state includes information about topology, link quality, and traffic conditions; actions correspond to routing decisions (selecting the next hop for a packet); and rewards reflect the quality of the routing decision (e.g., successful delivery, low latency, avoiding jammed areas).</p>
+
+<p>Reinforcement Learning (RL) techniques have shown considerable promise in adaptive, real-time decision-making in dynamic environments. Unlike traditional optimization methods that require complete knowledge of the environment, RL agents learn optimal policies through interaction with the environment, making them well-suited for dynamic network conditions where the environment model is unknown or constantly changing.</p>
+
+<h4>2.1.1 Q-Learning and Deep Q-Networks</h4>
+<p>Q-learning is a model-free RL algorithm that learns the value of taking a specific action in a given state. The Q-value function Q(s, a) represents the expected cumulative reward of taking action a in state s and following the optimal policy thereafter. The Q-value update rule is:</p>
+<div class="eq">Q(s, a) ← Q(s, a) + α[r + γ max<sub>a'</sub> Q(s', a') − Q(s, a)]</div>
+<p>where α is the learning rate, γ is the discount factor, r is the immediate reward, and s' is the next state.</p>
+
+<p>Deep Q-Networks (DQN), introduced by Mnih et al. in 2015, extend Q-learning by using deep neural networks to approximate the Q-value function, enabling the algorithm to handle high-dimensional state spaces. DQN introduced two key innovations: experience replay (storing transitions in a buffer and sampling randomly for training) and a target network (a separate network used for computing target Q-values, updated periodically) that significantly improve training stability.</p>
+
+<h4>2.1.2 Deep Reinforcement Learning for Network Routing</h4>
+<p>Pappone et al. (2023) proposed a framework that integrates Graph Neural Networks with Multi-Agent Deep Reinforcement Learning (DRL) to overcome a core limitation of traditional RL: the inability to generalize to unfamiliar network topologies without significant retraining. By encoding the network state using GNNs, their model captures the graph's permutation-invariant structure, enabling agents to minimize flow collisions and adapt to real-time topology changes dynamically. Their work demonstrated that GNN-based state representations enable RL agents to transfer learned policies across different network topologies, significantly reducing the need for retraining.</p>
+
+<p>Similarly, Jin et al. (2025) researched a Deep Reinforcement Learning-based Resilient Routing (DRLRR) approach for urban emergency communication networks. To counter the overestimation bias of conventional Q-learning, they used Double Deep Q-Networks (DDQN), enabling stable route optimization despite excessive node degradation scenarios. Their approach integrates node and link state information into a specialized reward function, ensuring stable data transmission during disasters. The DRLRR approach demonstrated that carefully designed reward functions that incorporate multiple objectives (delivery success, latency, and reliability) are essential for routing in adverse conditions.</p>
+
+<h3>2.2 Graph Neural Networks for Networking</h3>
+<p>Graph Neural Networks (GNNs) have emerged as a powerful tool for learning on graph-structured data, making them naturally suited for networking applications where the network topology can be represented as a graph. GNNs operate by iteratively aggregating information from neighboring nodes, allowing each node to build a representation that captures both its local features and its structural context within the graph.</p>
+
+<h4>2.2.1 Graph Convolutional Networks</h4>
+<p>Graph Convolutional Networks (GCNs), introduced by Kipf and Welling in 2017, gained popularity as an efficient spectral approximation of convolution on graphs. The objective was to enable models to learn on graphs using an efficient spectral approximation of convolution. In this approach, each node's representation is iteratively refined by aggregating the features of its local neighbours, normalized by the degrees of related nodes. Formally, the GCN layer-wise propagation rule is:</p>
+
+<div class="eq">H<sup>(l+1)</sup> = σ(D̃<sup>−½</sup> Ã D̃<sup>−½</sup> H<sup>(l)</sup> W<sup>(l)</sup>)</div>
+
+<p>where Ã = A + I<sub>N</sub> is the adjacency matrix with added self-connections, D̃ is the degree matrix of Ã, W<sup>(l)</sup> is the layer-specific trainable weight matrix, and σ is the activation function (e.g., ReLU).</p>
+
+<p>During convolution, the GCN assumes a constant graph structure and uses only the adjacency of the graph (structural connectivity) to determine aggregation weights instead of learned pairwise significance scores. While computationally efficient, this uniform weighting scheme limits the model's ability to distinguish between more and less important neighbors — a critical limitation in routing scenarios where link quality varies significantly.</p>
+
+<h4>2.2.2 Graph Attention Networks</h4>
+<p>Graph Attention Networks (GATs), introduced by Veličković et al. in 2018, address the limitations of GCNs by introducing a self-attention mechanism that computes attention coefficients α<sub>ij</sub> indicating how important neighbour j is to node i:</p>
+
+<div class="eq">α<sub>ij</sub> = exp(LeakyReLU(a<sup>T</sup>[Wh<sub>i</sub> ∥ Wh<sub>j</sub>])) / Σ<sub>k∈N<sub>i</sub></sub> exp(LeakyReLU(a<sup>T</sup>[Wh<sub>i</sub> ∥ Wh<sub>k</sub>]))</div>
+
+<p>where W is a shared linear transformation weight matrix, a is the attention mechanism's weight vector, h<sub>i</sub> is the feature vector of node i, and N<sub>i</sub> is the set of neighbours of node i. The attention coefficients are computed using a single-layer feedforward neural network parametrized by a, followed by a LeakyReLU nonlinearity and normalized using softmax.</p>
+
+<p>Unlike GCN, which assigns uniform weights during aggregation, GAT selectively weights each neighbour's contribution through a learnable attention mechanism. This makes it particularly suited for environments where link reliability varies due to jamming or interference. Selective aggregation allows GAT to better capture the importance of high-quality, non-jammed links during routing, which is a core motivation for its adoption in this framework.</p>
+
+<p>GATs also support multi-head attention, where K independent attention mechanisms are applied and their outputs are concatenated or averaged. This stabilizes the learning process and allows the model to attend to information from different representation subspaces at different positions.</p>
+
+<h4>2.2.3 GNNs in Routing Applications</h4>
+<p>The application of GNNs to routing is motivated by the natural correspondence between network topologies and graphs. Each node in the network corresponds to a node in the graph, and each wireless link corresponds to an edge. Node features can encode information about the node's state (traffic load, queue length, whether it is a source or destination), while edge features can encode link properties (latency, bandwidth, signal quality).</p>
+
+<p>By processing this graph-structured data through GNN layers, the model can learn embeddings that capture complex relationships between nodes that are difficult to express through hand-crafted features. These embeddings can then be used by RL agents to make better-informed routing decisions that account for the global network structure.</p>
+
+<h3>2.3 Digital Twin for Radio Environments</h3>
+<p>The concept of a Digital Twin — a real-time virtual replica of a physical system — has gained significant traction in the context of wireless network management. In the networking domain, a Digital Twin maintains a virtual model of the network that is continuously synchronized with the physical network, enabling predictive analysis, anomaly detection, and what-if scenario testing.</p>
+
+<h4>2.3.1 Digital Twin Architecture</h4>
+<p>A Digital Twin for radio environments typically consists of several key components:</p>
+<ul>
+<li><b>Radio Map:</b> A spatial representation of the radio environment, typically containing Received Signal Strength (RSS) values at grid points across the coverage area. The radio map captures the signal propagation characteristics of the environment, including the effects of path loss, shadowing, and interference.</li>
+<li><b>Path Loss Model:</b> A mathematical model that predicts signal attenuation based on the distance between transmitter and receiver, as well as environmental factors. Common models include the Free-Space Path Loss (FSPL) model and ray-tracing models.</li>
+<li><b>Anomaly Detection:</b> Modules that compare the expected radio environment (as predicted by the Digital Twin) with actual measurements to identify deviations that may indicate the presence of jammers or other anomalies.</li>
+</ul>
+
+<h4>2.3.2 DT-Based Anomaly Detection</h4>
+<p>Krause et al. (2023) proposed a novel approach to anomaly detection in radio environments using Digital Twins. Rather than anchoring detection to patterns mined from past data, their system maintains a physics-based virtual replica of the network running in real time. A ray-tracing engine inside the replica computes expected RSSI readings across each link under normal conditions. Any meaningful gap between predicted and measured signals is flagged — no attack examples are needed for training.</p>
+
+<p>Crucially, their framework can distinguish jamming from ordinary fading, which is exactly where conventional statistical detection tends to fail. This distinction is critical because fading is a natural phenomenon that occurs in all wireless channels, while jamming is an intentional attack that requires a different response. By maintaining a physics-based model of the expected radio environment, the Digital Twin can identify deviations that are inconsistent with normal fading patterns, providing a more reliable indication of jamming activity.</p>
+
+<p>The dataset generated by Krause et al. forms the basis for the Digital Twin component in the proposed framework. It provides 30,000 radio map scenarios per dataset, including both normal and jammed conditions, along with measurement differences that can be used to train anomaly detection algorithms.</p>
+
+<h3>2.4 Multi-Agent Systems in Network Optimization</h3>
+<p>Multi-Agent Reinforcement Learning (MARL) extends traditional RL by enabling multiple agents to learn and make decisions simultaneously within a shared environment. In the context of network routing, MARL is a natural fit because routing decisions are inherently decentralized — each node makes its own forwarding decision based on local information.</p>
+
+<h4>2.4.1 Independent vs. Cooperative Agents</h4>
+<p>In independent MARL, each agent learns its own policy without explicitly coordinating with other agents. While simple to implement, independent learning can lead to instability because each agent's optimal policy depends on the policies of other agents, which are also changing during training.</p>
+
+<p>Cooperative MARL introduces mechanisms for agents to share information and coordinate their learning. Common approaches include shared experience replay (where transitions from all agents are pooled into a common buffer), parameter sharing (where agents use identical network architectures and share some or all parameters), and communication protocols (where agents exchange messages to coordinate their actions).</p>
+
+<h4>2.4.2 MARL for Network Routing</h4>
+<p>The work by Bhavanasi, Pappone, and Esposito (2023) on "Dealing with Changes: Resilient Routing via Graph Neural Networks and Multi-Agent Deep Reinforcement Learning" provides the foundational architecture for the multi-agent component of this framework. Their RP15 model implements one DQN agent per node in a 50-node Barabási-Albert network, where each agent learns to forward packets to the best neighbour. The multi-agent approach enables distributed decision-making that scales naturally with network size, as each agent only needs to make decisions about its immediate neighbours.</p>
+
+<h3>2.5 Gap Analysis</h3>
+<p>The review of existing literature reveals several significant gaps that motivate the proposed framework:</p>
+
+<p><b>Gap 1: Limited Integration of DT and Routing.</b> Pappone et al. (2023) built a solid routing foundation using GNNs and multi-agent DRL, yet the work overlooks the subtleties of physical-layer threats by anchoring itself to standard network metrics such as latency and throughput. The agents have no awareness of the underlying physical layer conditions that affect link quality.</p>
+
+<p><b>Gap 2: Detection Without Intervention.</b> Krause et al. (2023) take a different angle, leveraging digital twins for detection but deliberately stopping at observation, leaving the door closed on any form of active network intervention. Their Digital Twin can detect anomalies and identify jammers, but does not use this information to make routing decisions or adapt network behavior.</p>
+
+<p><b>Gap 3: Missing Feature Enrichment.</b> Existing work has yet to meaningfully explore the tight integration of Digital Twin anomaly detection and GNN-based routing — particularly the idea of feeding high-fidelity anomaly scores from a Digital Twin directly into a Graph Attention Network as live, dynamic features. This integration would allow the routing agent to anticipate interference and route around it before packet loss escalates.</p>
+
+<p><b>Gap 4: Lack of Attention-Based Link Assessment.</b> Most GNN-based routing approaches use GCN layers that assign uniform weights to all neighbours during aggregation. In environments with varying link quality due to jamming or interference, the ability to selectively attend to high-quality links through attention mechanisms can significantly improve routing decisions.</p>
+
+<p>This dissertation addresses these gaps by proposing a framework that integrates all three capabilities: Digital Twin-based anomaly detection, GAT-based topology embedding with DT-enriched features, and multi-agent DRL for distributed routing. The core proposition is that routing the Digital Twin's ground-truth awareness through the attention mechanism of a GAT-based RL agent enables the network to build genuine resilience — one where interference is anticipated and routed around before packet loss has a chance to escalate.</p>
+
+<table>
+<caption style="caption-side:top; text-align:center; font-weight:bold; margin-bottom:8px;">Table 2.1: Summary of Related Works and Their Limitations</caption>
+<tr><th>Reference</th><th>Approach</th><th>Strengths</th><th>Limitations</th></tr>
+<tr><td>Pappone et al. (2023)</td><td>GNN + Multi-Agent DRL</td><td>Topology-aware routing, Generalization across topologies</td><td>No physical-layer threat awareness, No DT integration</td></tr>
+<tr><td>Jin et al. (2025)</td><td>DDQN for Emergency Routing</td><td>Resilient routing under node degradation</td><td>Single-agent, No graph structure utilization</td></tr>
+<tr><td>Kipf &amp; Welling (2017)</td><td>Graph Convolutional Networks</td><td>Efficient graph representation learning</td><td>Uniform neighbor weighting, No selective attention</td></tr>
+<tr><td>Veličković et al. (2018)</td><td>Graph Attention Networks</td><td>Selective neighbor weighting via attention</td><td>Not specifically designed for routing</td></tr>
+<tr><td>Krause et al. (2023)</td><td>Digital Twin Anomaly Detection</td><td>Physics-based jamming detection, No training data needed</td><td>Detection only — no active routing intervention</td></tr>
+<tr><td><b>This Work</b></td><td><b>DT + GAT + Multi-Agent DQN</b></td><td><b>Integrates all three: detection, representation, and routing</b></td><td><b>Simulation-based evaluation only</b></td></tr>
+</table>
+
+<div class="page-break"></div>
+
+
+<!-- ==================== CHAPTER 3: SYSTEM DESIGN ==================== -->
+<h1>CHAPTER 3</h1>
+<h2>SYSTEM DESIGN AND ARCHITECTURE</h2>
+
+<p>This chapter presents the detailed design of the proposed Multi-Agent Digital Twin Graph Attention Network (MA DT-GCN) framework. The framework integrates three core components — a Digital Twin module, a Graph Attention Network, and a Multi-Agent Deep Q-Network — to enable resilient, jamming-aware routing in Wireless Mesh Networks.</p>
+
+<h3>3.1 System Overview</h3>
+<p>The proposed framework operates on a 50-node wireless mesh network with 100 bidirectional edges, generated using the BRITE (Boston University Representative Internet Topology Generator) topology generator. The system architecture consists of three interconnected modules that work together to achieve adaptive routing under adversarial conditions.</p>
+
+<p>The <b>Digital Twin Module</b> maintains a virtual replica of the physical network, continuously updated with radio environment data. It processes radio maps containing Received Signal Strength (RSS) measurements to derive link-level performance metrics (latency and bandwidth), detects anomalies by comparing expected and actual signal levels, and identifies jammed nodes through distance-based jammer detection. The output of this module is a seven-dimensional feature vector for each node that captures both network state and environmental conditions.</p>
+
+<p>The <b>Graph Attention Network (GAT)</b> processes the enriched node features and network topology to generate node embeddings through attention-based message passing. Two GAT layers enable information to propagate between nodes, with learned attention weights that allow each node to selectively focus on its most relevant neighbours. The embeddings are then passed through fully connected layers to estimate Q-values for routing decisions.</p>
+
+<p>The <b>Multi-Agent DQN</b> consists of 50 independent agents, one per network node. Each agent has its own policy and target networks (both GAT_DTAware models) and learns to forward packets to the best neighbour using epsilon-greedy exploration. Agents share experiences through a shared replay memory pool, enabling cooperative learning while maintaining independent decision-making.</p>
+
+<div class="figure">
+<img src="system_architecture_1774691778122.png" alt="System Architecture">
+<p class="caption">Figure 3.1: Overall system architecture of the MA DT-GCN framework showing the interaction between the Digital Twin, Graph Attention Network, and Multi-Agent DQN components</p>
+</div>
+
+<h3>3.2 Digital Twin Module</h3>
+<p>The Digital Twin module is the environmental awareness layer of the framework. It is implemented through three primary components: the Mesh Digital Twin, the Anomaly Bridge, and the Jammer Detector.</p>
+
+<h4>3.2.1 Mesh Digital Twin</h4>
+<p>The Mesh Digital Twin is the core component that maintains a virtual copy of the physical wireless mesh network. It takes the network topology (as a NetworkX graph with 50 nodes and 100 edges) and node positions (scaled to a 41×41 Digital Twin coordinate grid) as inputs.</p>
+
+<p>The Digital Twin ingests environmental radio maps — 41×41 grid arrays of RSS values in dBm — and updates link-level quality metrics for all edges in the network. For each edge (u, v), the RSS values at both endpoint positions are averaged, and two transformations are applied:</p>
+
+<p><b>RSS to Latency (Sigmoidal Transformation):</b> Higher RSS values indicate better signal quality, which translates to lower latency. The transformation uses a sigmoid function:</p>
+<div class="eq">latency = 1 / (1 + exp((RSS − RSS<sub>ref</sub>) / 30)),&emsp; latency ∈ [0.01, 0.99]</div>
+<p>where RSS<sub>ref</sub> = −70 dBm is the reference signal level for normalization. This sigmoidal mapping captures the non-linear relationship between signal strength and link performance.</p>
+
+<p><b>RSS to Capacity (Linear Normalization):</b> Capacity is computed using a simpler linear mapping:</p>
+<div class="eq">capacity = (RSS + 100) / 50,&emsp; capacity ∈ [0.01, 1.0]</div>
+
+<p>The updated latency and capacity values serve as edge weights in the network graph, directly influencing the shortest path computations used in the reward function and providing edge attributes for the GAT attention mechanism.</p>
+
+<div class="figure">
+<img src="digital_twin_architecture_1774691812465.png" alt="Digital Twin Architecture">
+<p class="caption">Figure 3.2: Digital Twin module architecture showing the data flow from radio maps through RSS-to-latency/capacity transformations and anomaly detection to the output feature vector</p>
+</div>
+
+<h4>3.2.2 Anomaly Bridge</h4>
+<p>The Anomaly Bridge converts Digital Twin measurement differences into per-node anomaly scores. The DT dataset provides 25 measurement points per scenario, each with a difference value between the expected RSS (from the Digital Twin) and the actual measured RSS.</p>
+
+<p><b>Training Phase:</b> The Anomaly Bridge is trained on measurements from non-jammed (normal) scenarios. It computes the mean and standard deviation of absolute measurement differences across all normal samples and establishes a 2-sigma threshold:</p>
+<div class="eq">threshold = μ + 2σ</div>
+<p>This statistical threshold provides a baseline against which anomalous measurements can be identified without requiring labeled attack data — a key advantage for deployment in scenarios where attack data may not be available.</p>
+
+<p><b>Scoring Phase:</b> For each scenario, the absolute measurement differences are compared against the trained threshold. Scores are computed on a 0-to-1 scale, where 0 indicates normal behaviour and values approaching 1 indicate increasingly anomalous conditions. The scoring function uses a normalized scaling that maps differences above the mean to the [0, 1] range.</p>
+
+<p><b>Spatial Mapping:</b> The measurement point scores are mapped to mesh node scores using nearest-neighbour interpolation with distance-based decay. For each of the 50 mesh nodes, the nearest measurement point is identified, and its anomaly score is assigned to the node, weighted by an exponential decay factor based on the distance between the node and the measurement point.</p>
+
+<h4>3.2.3 Jammer Detector</h4>
+<p>The Jammer Detector provides per-node jamming probability estimates based on the distance to known jammer positions. It operates with a configurable jamming radius (default: 10 units in DT coordinates).</p>
+
+<p><b>Hard Detection:</b> Nodes within the jamming radius are classified as definitively jammed (probability = 1.0). This binary classification is used for tracking jammed steps during routing and for computing the jamming penalty in the reward function.</p>
+
+<p><b>Soft Detection:</b> Nodes beyond the jamming radius receive exponentially decaying jamming probabilities based on their distance from the nearest jammer. This soft scoring provides the routing agent with gradient information about proximity to jammed areas, enabling it to avoid regions that may be partially affected by jamming even if they are not within the direct jamming radius.</p>
+
+<h4>3.2.4 Seven-Dimensional Node Feature Vector</h4>
+<p>The Digital Twin module produces a comprehensive seven-dimensional feature vector for each node in the network:</p>
+
+<table>
+<caption style="caption-side:top; text-align:center; font-weight:bold; margin-bottom:8px;">Table 3.1: Seven-Dimensional Node Feature Vector</caption>
+<tr><th>Index</th><th>Feature</th><th>Source</th><th>Description</th></tr>
+<tr><td>0</td><td>is_source</td><td>Environment</td><td>1.0 if node is current position of the packet, 0 otherwise</td></tr>
+<tr><td>1</td><td>is_dest</td><td>Environment</td><td>1.0 if node is the routing target, 0 otherwise</td></tr>
+<tr><td>2</td><td>avg_latency</td><td>Digital Twin</td><td>Mean edge weight (latency) to all neighbour nodes</td></tr>
+<tr><td>3</td><td>avg_bandwidth</td><td>Digital Twin</td><td>Mean edge capacity to all neighbour nodes</td></tr>
+<tr><td>4</td><td>anomaly_score</td><td>Anomaly Bridge</td><td>Anomaly score from DT measurement differences (0–1)</td></tr>
+<tr><td>5</td><td>jam_probability</td><td>Jammer Detector</td><td>Estimated jamming probability (0–1)</td></tr>
+<tr><td>6</td><td>neighbor_jam_avg</td><td>Jammer Detector</td><td>Mean jamming probability across all neighbour nodes</td></tr>
+</table>
+
+<p>The first four features represent basic routing information (source/destination flags and link quality), while the last three features are Digital Twin-derived parameters that provide environmental awareness. The baseline GAT model uses only the first four features (with features 4–6 zeroed out), enabling a clean evaluation of the DT contribution.</p>
+
+<h3>3.3 Graph Attention Network</h3>
+<p>The Graph Attention Network serves as the decision-making core of the framework, embedding the network topology and node features into a representation suitable for Q-value estimation.</p>
+
+<h4>3.3.1 Architecture</h4>
+<p>The GAT_DTAware model consists of four layers:</p>
+<ol>
+<li><b>First GATConv Layer:</b> Takes the 7-dimensional node feature vector as input and produces embeddings of dimension num_nodes/3 ≈ 16. The layer uses edge_dim=1 to incorporate DT-derived edge weights (latency) into the attention computation.</li>
+<li><b>Second GATConv Layer:</b> Takes the 16-dimensional output of the first layer and produces embeddings of dimension num_nodes/2 = 25. SELU activation is applied between the two GAT layers.</li>
+<li><b>First Fully Connected Layer:</b> Flattens all node embeddings into a single vector (50 × 25 = 1,250 dimensions) and reduces to 50 dimensions.</li>
+<li><b>Second Fully Connected Layer:</b> Maps from 50 dimensions to the output dimension (number of neighbours for multi-agent, or 50 for single-agent), producing Q-values.</li>
+</ol>
+
+<table>
+<caption style="caption-side:top; text-align:center; font-weight:bold; margin-bottom:8px;">Table 3.2: GAT Model Architecture Parameters</caption>
+<tr><th>Layer</th><th>Type</th><th>Input Dim</th><th>Output Dim</th><th>Parameters</th></tr>
+<tr><td>conv1</td><td>GATConv</td><td>7</td><td>16</td><td>edge_dim=1</td></tr>
+<tr><td>conv2</td><td>GATConv</td><td>16</td><td>25</td><td>edge_dim=1</td></tr>
+<tr><td>fc1</td><td>Linear</td><td>1,250</td><td>50</td><td>—</td></tr>
+<tr><td>fc2</td><td>Linear</td><td>50</td><td>num_neighbors</td><td>—</td></tr>
+</table>
+
+<h4>3.3.2 Attention Mechanism with Edge Attributes</h4>
+<p>A key design decision is the integration of Digital Twin-derived edge weights into the GAT attention computation. By passing edge_attr (DT-computed latency values) to the GATConv layers, the attention mechanism can consider link quality when computing attention coefficients. This means that nodes with high-quality links (low latency, high capacity) can receive higher attention weights, while nodes with degraded links (due to jamming or interference) receive lower weights.</p>
+
+<p>The edge attributes are computed for all edges in the graph, including reverse edges (since the graph is undirected). Each edge attribute is a single-dimensional value representing the DT-derived latency for that link. These attributes are recomputed on each environment reset when the Digital Twin updates link weights based on the current radio map scenario.</p>
+
+<h4>3.3.3 Action Masking</h4>
+<p>To ensure that the agent only selects valid actions (i.e., neighbours of the current node), the Q-value output is masked using a boolean mask tensor. Invalid actions (non-neighbours) have their Q-values set to negative infinity, ensuring that the argmax operation during exploitation always selects a valid neighbour.</p>
+
+<h3>3.4 Multi-Agent Deep Q-Network</h3>
+<p>The Multi-Agent system implements a cooperative routing strategy where each node in the network has its own independent DQN agent. This design mirrors the decentralized nature of WMN routing while enabling cooperative learning through shared experiences.</p>
+
+<h4>3.4.1 Node Agent Architecture</h4>
+<p>Each NodeAgent consists of:</p>
+<ul>
+<li><b>Policy Network:</b> A GAT_DTAware model with output dimension equal to the node's number of neighbours. This network is used for action selection during training.</li>
+<li><b>Target Network:</b> A separate GAT_DTAware model used for computing target Q-values, providing training stability by decoupling the target from the rapidly changing policy network.</li>
+<li><b>Replay Memory:</b> A per-agent experience replay buffer with capacity 20,000 transitions.</li>
+<li><b>Optimizer:</b> An Adam optimizer with learning rate 0.001 for updating the policy network.</li>
+</ul>
+
+<h4>3.4.2 Shared Experience Replay</h4>
+<p>In addition to per-agent replay buffers, the framework maintains a global SharedReplayMemory pool with a capacity of 50,000 transitions. All 50 agents contribute to this pool, and agents can draw from it to supplement their own experience data. The shared pool implements compatibility filtering — an agent can only sample transitions from the pool that were generated by agents with the same number of neighbours, ensuring action dimension consistency.</p>
+
+<p>The sampling strategy blends per-agent and shared experiences: agents with sufficient own experience use 60% own transitions and 40% shared transitions in each training batch. Agents with insufficient own experience can bootstrap entirely from the shared pool, enabling faster initial learning.</p>
+
+<h4>3.4.3 Target Network Updates</h4>
+<p>Target networks are updated using soft updates (Polyak averaging) with a mixing coefficient τ = 0.005:</p>
+<div class="eq">θ<sub>target</sub> ← τ · θ<sub>policy</sub> + (1 − τ) · θ<sub>target</sub></div>
+<p>This gradual update prevents the sudden shifts in Q-value targets that can destabilize training. Soft updates are performed every 10 episodes for all agents simultaneously.</p>
+
+<table>
+<caption style="caption-side:top; text-align:center; font-weight:bold; margin-bottom:8px;">Table 3.3: DQN Hyperparameters</caption>
+<tr><th>Parameter</th><th>Single-Agent</th><th>Multi-Agent</th></tr>
+<tr><td>Learning Rate</td><td>0.001</td><td>0.001</td></tr>
+<tr><td>Discount Factor (γ)</td><td>0.99</td><td>0.99</td></tr>
+<tr><td>Batch Size</td><td>128</td><td>32</td></tr>
+<tr><td>Replay Memory Size</td><td>5,000</td><td>20,000 per agent + 50,000 shared</td></tr>
+<tr><td>Epsilon Start</td><td>0.95</td><td>0.95</td></tr>
+<tr><td>Epsilon End</td><td>0.001</td><td>0.001</td></tr>
+<tr><td>Epsilon Decay</td><td>1,000 steps</td><td>1,500 episodes</td></tr>
+<tr><td>Target Update</td><td>Every 14,000 steps (hard copy)</td><td>Every 10 episodes (soft, τ=0.005)</td></tr>
+<tr><td>Loss Function</td><td colspan="2">Smooth L1 (Huber) Loss</td></tr>
+<tr><td>Gradient Clipping</td><td colspan="2">Max norm = 1.0</td></tr>
+</table>
+
+<h3>3.5 Reward Function Design</h3>
+<p>The reward function is a critical component that guides the agents toward optimal routing behaviour. It consists of four components that together balance routing efficiency with resilience to jamming attacks.</p>
+
+<h4>3.5.1 Base Reward</h4>
+<p>The base reward measures the agent's progress toward the destination using A* shortest path distances:</p>
+<ul>
+<li><b>Reached target optimally:</b> +1.01 (if the last hop was on the shortest path)</li>
+<li><b>Reached target suboptimally:</b> −1.51 (if the last hop was not optimal)</li>
+<li><b>Progress toward target:</b> d<sub>old</sub> − d<sub>new</sub> (positive reward for moving closer)</li>
+<li><b>Moved away from target:</b> −1.0</li>
+<li><b>Timeout (path > 10× number of nodes):</b> −1.0</li>
+</ul>
+
+<h4>3.5.2 Anomaly Dampening</h4>
+<p>The base reward is multiplied by an anomaly dampening factor that reduces rewards for routing through nodes with high anomaly scores:</p>
+<div class="eq">R<sub>dampened</sub> = R<sub>base</sub> × (1 − α × anomaly_score)</div>
+<p>where α = 0.3 is the anomaly dampening coefficient. This soft penalty encourages agents to avoid anomalous areas while not completely prohibiting traversal when necessary.</p>
+
+<h4>3.5.3 Jamming Penalty</h4>
+<p>A fixed negative reward is applied whenever the agent routes through a node identified as jammed:</p>
+<div class="eq">R<sub>jam</sub> = −λ &emsp;(if current node is jammed)</div>
+<p>where λ = 0.5 is the jamming penalty coefficient. This hard penalty directly discourages routing through known jammed regions.</p>
+
+<h4>3.5.4 Resilience Bonus</h4>
+<p>An additional reward is granted when the agent successfully reaches the destination while avoiding all jammed nodes in the path:</p>
+<div class="eq">R<sub>resilience</sub> = +0.3 &emsp;(if reached target and no jammed nodes in path)</div>
+
+<table>
+<caption style="caption-side:top; text-align:center; font-weight:bold; margin-bottom:8px;">Table 3.4: Reward Function Parameters</caption>
+<tr><th>Parameter</th><th>Symbol</th><th>Value</th><th>Effect</th></tr>
+<tr><td>Anomaly Dampening</td><td>α</td><td>0.3</td><td>Reduces reward in anomalous areas</td></tr>
+<tr><td>Jamming Penalty</td><td>λ</td><td>0.5</td><td>Fixed penalty for jammed nodes</td></tr>
+<tr><td>Resilience Bonus</td><td>—</td><td>0.3</td><td>Bonus for avoiding all jammed nodes</td></tr>
+</table>
+
+<div class="figure">
+<img src="reward_function_1774691796682.png" alt="Reward Function Design">
+<p class="caption">Figure 3.4: Enhanced reward function design showing the composition of base reward, anomaly dampening, jamming penalty, and resilience bonus</p>
+</div>
+
+<h3>3.6 Training Algorithm</h3>
+<p>The complete training algorithm for the MA DT-GCN framework is described below. The algorithm integrates all the components described in the previous sections into a coherent training loop.</p>
+
+<p><b>Algorithm: Resilient Routing with MA DT-GCN</b></p>
+<ol>
+<li><b>Initialize:</b> DT radio map, MA-DQN agent replay buffers B<sub>i</sub>, and GAT networks with arbitrary weights.</li>
+<li><b>For each training episode:</b>
+<ol type="a">
+<li><b>Reset:</b> Network topology and initialize packet at source node.</li>
+<li><b>Digital Twin Update:</b> Retrieve real-time RSS map and compute anomaly/jamming probabilities.</li>
+<li><b>State Representation:</b> For each node i, construct the 7-dimensional feature vector x<sub>i</sub>.</li>
+<li><b>While</b> packet not at destination and max steps not reached:
+<ol type="i">
+<li><b>GAT Attention:</b> Compute node embeddings h<sub>i</sub> by aggregating neighbour information using learned attention coefficients.</li>
+<li><b>Action Selection:</b> With probability ε select random neighbour; otherwise select the neighbour with highest Q-value.</li>
+<li><b>Execute</b> action (forward packet to selected neighbour).</li>
+<li><b>Observe</b> reward (progress, anomaly penalty, jamming penalty) and next state embeddings.</li>
+<li><b>Store</b> transition in replay buffer B<sub>i</sub> and shared pool.</li>
+<li><b>Experience Replay:</b> Sample mini-batch from B<sub>i</sub> ∪ shared pool.</li>
+<li><b>Policy Update:</b> Perform gradient descent on Huber loss to update network weights θ<sub>i</sub>.</li>
+</ol></li>
+<li><b>Decay</b> exploration rate ε.</li>
+<li><b>Soft update</b> target networks every 10 episodes.</li>
+</ol></li>
+</ol>
+
+<div class="page-break"></div>
+
+<!-- ==================== CHAPTER 4: IMPLEMENTATION ==================== -->
+<h1>CHAPTER 4</h1>
+<h2>IMPLEMENTATION</h2>
+
+<p>This chapter describes the implementation details of the proposed MA DT-GCN framework. The implementation follows a modular architecture that separates concerns between data loading, digital twin processing, environment simulation, model definition, and training orchestration.</p>
+
+<h3>4.1 Technology Stack</h3>
+<p>The framework is implemented in Python, leveraging several specialized libraries for deep learning, graph processing, and network simulation.</p>
+
+<table>
+<caption style="caption-side:top; text-align:center; font-weight:bold; margin-bottom:8px;">Table 4.1: Technology Stack</caption>
+<tr><th>Component</th><th>Technology</th><th>Purpose</th></tr>
+<tr><td>Programming Language</td><td>Python 3.10+</td><td>Core implementation</td></tr>
+<tr><td>Deep Learning</td><td>PyTorch</td><td>Neural network training</td></tr>
+<tr><td>Graph Neural Networks</td><td>PyTorch Geometric (PyG)</td><td>GATConv layers, graph data handling</td></tr>
+<tr><td>Graph Processing</td><td>NetworkX</td><td>Network topology, shortest path</td></tr>
+<tr><td>RL Environment</td><td>OpenAI Gym</td><td>Environment interface</td></tr>
+<tr><td>Scientific Computing</td><td>NumPy</td><td>Array operations, radio maps</td></tr>
+<tr><td>Data Analysis</td><td>Pandas</td><td>Metrics recording, CSV output</td></tr>
+<tr><td>Visualization</td><td>Matplotlib</td><td>Training graphs, comparison plots</td></tr>
+<tr><td>Topology Generation</td><td>BRITE</td><td>Network topology files</td></tr>
+<tr><td>GPU Acceleration</td><td>CUDA</td><td>Optional GPU training</td></tr>
+</table>
+
+<h3>4.2 Module Architecture</h3>
+<p>The codebase is organized into a hierarchical module structure under the integrated_dt_gcn package. Each module encapsulates a specific aspect of the framework.</p>
+
+<h4>4.2.1 Configuration Module</h4>
+<p>The configuration module (config.py) centralizes all hyperparameters and system settings. This includes device configuration (automatic GPU detection), file paths, network parameters (50 nodes, 100 edges), feature dimensions (7), RSS thresholds, reward parameters, and training hyperparameters for both single-agent and multi-agent modes. Centralizing configuration ensures consistency across all modules and simplifies experimentation with different parameter settings.</p>
+
+<h4>4.2.2 Data Loading Modules</h4>
+<p>Two data loaders handle the input data for the framework:</p>
+
+<p>The <b>BRITELoader</b> parses the 50nodes.brite topology file generated by the BRITE topology generator. It extracts node positions and edge connections from the BRITE format, creates a NetworkX graph with weight and capacity attributes for each edge, and provides coordinate scaling from BRITE coordinates (0–99) to Digital Twin coordinates (0–40) using a scale factor of 0.4.</p>
+
+<p>The <b>DTDatasetLoader</b> loads the Digital Twin datasets stored as pickle files. It handles three types of dataset files: radio map datasets (fspl_RMdataset{N}.pkl) containing 30,000 radio map scenarios each, measurement datasets (fspl_measurements{N}.pkl) with measurement differences and jammer labels, and path loss map datasets (fspl_PLdataset{N}.pkl). The loader provides methods for filtering jammed and normal scenarios, extracting radio map arrays, obtaining jammer positions, and retrieving measurement differences and coordinates.</p>
+
+<h4>4.2.3 Digital Twin Module</h4>
+<p>The digital_twin subpackage contains the MeshDigitalTwin class (mesh_twin.py) which manages the virtual network replica and updates link weights based on radio map data, and the AnomalyBridge and JammerDetector classes (anomaly_bridge.py) which handle anomaly scoring and jammer detection respectively. These modules process raw DT data into the environmental features that enrich the node feature vectors.</p>
+
+<h4>4.2.4 Environment Module</h4>
+<p>The environment subpackage contains the HybridEnv class (hybrid_env.py) which implements the OpenAI Gym interface for the routing environment. It integrates the BRITE topology, DT radio maps, anomaly scores, and jammer information into a unified simulation environment. The enhanced_reward.py module implements the multi-component reward function with base reward, anomaly dampening, jamming penalty, and resilience bonus.</p>
+
+<h4>4.2.5 Models Module</h4>
+<p>The models subpackage contains the neural network architectures and RL agent implementations. The gat_dt_aware.py module defines the GAT_DTAware model (the GAT architecture with edge attribute support) and the GAT_DTAgent class (single-agent DQN wrapper). The multi_agent.py module defines the NodeAgent class (per-node DQN agent), SharedReplayMemory class (global experience pool), and MultiAgentCoordinator class (orchestrator for all 50 agents).</p>
+
+<h3>4.3 Data Pipeline</h3>
+<p>The data pipeline transforms raw input data through several stages before it reaches the learning agents:</p>
+
+<ol>
+<li><b>Topology Loading:</b> The BRITE file is parsed to create a NetworkX graph with 50 nodes and 100 edges. Node positions are extracted and scaled to DT coordinates.</li>
+<li><b>Radio Map Loading:</b> DT radio map datasets are loaded from pickle files, providing 30,000 scenarios per dataset with both normal and jammed conditions.</li>
+<li><b>Anomaly Bridge Training:</b> The AnomalyBridge is trained on measurement differences from 2,000 normal (non-jammed) samples, establishing the 2-sigma anomaly detection threshold.</li>
+<li><b>Environment Initialization:</b> The HybridEnv creates the simulation environment by combining the BRITE topology, DT datasets, and trained anomaly bridge.</li>
+<li><b>Per-Episode Processing:</b> On each environment reset, a random scenario is selected (50% jammed, 50% normal), the radio map is applied to update link weights, jammer positions are used to compute jamming probabilities, and measurement differences are processed to compute anomaly scores.</li>
+<li><b>Feature Construction:</b> The 7-dimensional node feature vector is constructed for all 50 nodes, combining routing state flags, DT-derived link quality metrics, and anomaly/jamming information.</li>
+<li><b>Graph Data Construction:</b> A PyTorch Geometric Data object is created with node features, edge index (bidirectional), and edge attributes (DT-derived latency values).</li>
+</ol>
+
+<h3>4.4 Environment Setup</h3>
+<p>The HybridEnv class provides the standard Gym interface (reset, step) for agent interaction. The observation space consists of multi-discrete values for source and target nodes, while the action space is discrete with size equal to the number of network nodes. The environment manages the routing simulation, including source/target selection, path tracking, jammed node identification, and step validation.</p>
+
+<p>A key feature of the environment is its scenario selection mechanism. On each episode reset, the environment randomly selects either a jammed or normal scenario with equal probability. This ensures that the agents are exposed to both types of conditions during training, learning to route effectively in both normal and adversarial environments. When a jammed scenario is selected, jammer positions are used to compute which nodes are within the jamming radius, and these nodes are tagged for use in the reward function.</p>
+
+<h3>4.5 Model Training Pipeline</h3>
+<p>The training pipeline is orchestrated through two main scripts: train_integrated.py for single-agent training, and train_multi_agent.py for multi-agent training. A third script, compare_models.py, runs both models sequentially on the same environment and produces comparative analysis.</p>
+
+<p>The training pipeline includes comprehensive metrics tracking covering episode-level metrics (total reward, path length, jammed steps, success/failure, total latency, average bandwidth, average PDR) and step-level metrics (per-step loss, latency, bandwidth). All metrics are saved to CSV files for post-training analysis, and summary statistics are appended to a running log file for tracking progress across experiments.</p>
+
+<p>Reproducibility is ensured through the --seed command-line argument, which sets random seeds for Python's random module, NumPy, and PyTorch (including CUDA if available). The default seed is 42, and all experiments reported in this dissertation use this seed.</p>
+
+<div class="page-break"></div>
+
+
+<!-- ==================== CHAPTER 5: EXPERIMENTS AND RESULTS ==================== -->
+<h1>CHAPTER 5</h1>
+<h2>EXPERIMENTS AND RESULTS</h2>
+
+<p>This chapter presents the experimental evaluation of the proposed MA DT-GCN framework. The experiments compare the Multi-Agent GAT+DT model against a single-agent GAT Baseline to quantify the impact of Digital Twin integration and multi-agent coordination on routing performance in adversarial wireless mesh network environments.</p>
+
+<h3>5.1 Experimental Setup</h3>
+
+<h4>5.1.1 Network Environment</h4>
+<p>The experiments are conducted on a 50-node wireless mesh network with 100 bidirectional edges, generated using the BRITE topology generator with the Barabási-Albert model. The network topology is fixed across all experiments to ensure fair comparison between models.</p>
+
+<div class="figure">
+<img src="network_v2.jpeg" alt="Network Topology" style="max-width:70%;">
+<p class="caption">Figure 5.1: Simulated 50-node WMN topology generated using BRITE showing node positions and edge connections</p>
+</div>
+
+<h4>5.1.2 Dataset Configuration</h4>
+<p>The Digital Twin dataset (dataset_nr=0) provides 30,000 radio map scenarios. Approximately 50% of scenarios include one or more active jammers. The anomaly bridge is trained on 2,000 normal (non-jammed) measurement samples. The radio map grid resolution is 41×41 pixels, corresponding to a physical area with measurement spacing of approximately 10 meters.</p>
+
+<h4>5.1.3 Models Compared</h4>
+<p>Two models are compared in the experiments:</p>
+<ol>
+<li><b>MA GAT+DT (Proposed):</b> Multi-Agent GAT model with full 7-dimensional DT-enriched features and 50 independent agents. This is the complete proposed framework with Digital Twin integration.</li>
+<li><b>GAT Baseline:</b> Single-Agent GAT model using only 4 features (source/destination flags and link quality metrics) with DT features (indices 4–6) zeroed out. This represents a topology-aware routing agent without environmental awareness.</li>
+</ol>
+
+<h4>5.1.4 Training Configuration</h4>
+<p>Both models are trained for 3,000 episodes with random seed 42 for reproducibility. On each episode, a random scenario is selected (50% probability of jammed vs. normal conditions), and random source-target pairs are chosen. The maximum steps per episode is 10× the number of nodes (500 steps). All experiments are run on the same machine and environment to ensure fair comparison.</p>
+
+<h3>5.2 Performance Metrics</h3>
+<p>The following metrics are used to evaluate and compare the models:</p>
+
+<table>
+<caption style="caption-side:top; text-align:center; font-weight:bold; margin-bottom:8px;">Table 5.1: Comparative Performance Metrics (3,000 Episodes)</caption>
+<tr><th>Metric</th><th>MA GAT+DT</th><th>GAT Baseline</th><th>Improvement</th></tr>
+<tr><td>Average Reward</td><td>0.93</td><td>−17.78</td><td>+18.71</td></tr>
+<tr><td>Success Rate</td><td>100%</td><td>93%</td><td>+7 pp</td></tr>
+<tr><td>Average Path Length</td><td>3.67 hops</td><td>50.85 hops</td><td>−47.18 hops</td></tr>
+<tr><td>Average Jammed Steps</td><td>0.29</td><td>1.25</td><td>−0.96 (76.8% reduction)</td></tr>
+<tr><td>Training Time</td><td>35.51 min</td><td>75.21 min</td><td>52.8% faster</td></tr>
+<tr><td>Average PDR</td><td>100%</td><td>100%</td><td>—</td></tr>
+</table>
+
+<h3>5.3 Reward and Routing Stability</h3>
+<p>Figure 5.2 presents the reward convergence curves for both models over 3,000 training episodes, smoothed using a 50-episode moving average to reveal underlying trends.</p>
+
+<p>The MA GAT+DT model demonstrates significantly faster convergence and higher final reward values compared to the GAT Baseline. The multi-agent model begins generating positive rewards within the first few hundred episodes, indicating that the combination of distributed decision-making and DT-enriched features enables rapid learning of effective routing strategies.</p>
+
+<p>In contrast, the GAT Baseline model exhibits much slower convergence and consistently lower rewards throughout training. Without Digital Twin awareness of jamming and anomalies, the baseline agent frequently routes through jammed areas, incurring penalties, and takes substantially longer paths due to the lack of environmental context in its decision-making.</p>
+
+<p>The stability of the MA GAT+DT reward curve (low variance in the moving average) indicates that the multi-agent coordination and shared experience replay effectively prevent the catastrophic forgetting and policy oscillation that often plague multi-agent RL systems.</p>
+
+<div class="figure">
+<img src="comparison_reward_graph.png" alt="Reward Convergence">
+<p class="caption">Figure 5.2: Reward convergence comparison between MA GAT+DT (green) and GAT Baseline (red) over 3,000 training episodes, shown as 50-episode moving averages</p>
+</div>
+
+<h3>5.4 Path Efficiency Analysis</h3>
+<p>The path length metric measures the number of hops taken by the agent to reach the destination node. Shorter paths indicate more efficient routing decisions.</p>
+
+<p>As shown in Figure 5.3, the MA GAT+DT model achieves dramatically shorter paths compared to the baseline. The proposed model converges to an average path length of 3.67 hops, compared to the baseline's 50.85 hops — a reduction of over 92%. This improvement demonstrates the effectiveness of the Digital Twin features in providing the agent with the environmental awareness needed to make efficient routing decisions.</p>
+
+<p>The baseline's high average path length indicates that without DT features, the agent struggles to find direct routes, often wandering through the network before reaching the destination. The multi-agent architecture, where each node makes an informed local decision, enables more efficient hop-by-hop routing compared to the single-agent approach that must make all routing decisions from a single centralized perspective.</p>
+
+<div class="figure">
+<img src="comparison_path_length_graph.png" alt="Path Length Comparison">
+<p class="caption">Figure 5.3: Path length comparison between MA GAT+DT and GAT Baseline over 3,000 episodes, showing 50-episode moving averages</p>
+</div>
+
+<h3>5.5 Jamming Avoidance Analysis</h3>
+<p>The number of jammed steps per episode directly measures the agent's ability to avoid jammed nodes during routing. Each jammed step incurs a penalty of λ = 0.5 in the reward function and indicates that the packet was routed through a compromised node.</p>
+
+<p>Figure 5.4 shows that the MA GAT+DT model significantly reduces the number of jammed steps compared to the baseline. The proposed model averages only 0.29 jammed steps per episode, compared to 1.25 for the baseline — a reduction of 76.8%.</p>
+
+<p>This improvement is directly attributable to the Digital Twin integration. The anomaly scores and jamming probability features (dimensions 4–6 of the node feature vector) provide the GAT attention mechanism with real-time information about which nodes and links are affected by jamming. The multi-agent architecture further enhances this avoidance capability, as each node agent can independently assess its local jamming risk and route traffic accordingly.</p>
+
+<p>The baseline model, which has its DT features zeroed out, can only learn to avoid jammed areas through trial-and-error — discovering jammed nodes after routing through them and incurring penalties. This reactive approach is inherently less effective than the proactive avoidance enabled by DT awareness.</p>
+
+<div class="figure">
+<img src="comparison_jammed_steps_graph.png" alt="Jammed Steps Comparison">
+<p class="caption">Figure 5.4: Jammed steps comparison between MA GAT+DT and GAT Baseline over 3,000 episodes, showing 50-episode moving averages</p>
+</div>
+
+<h3>5.6 Convergence and Training Efficiency</h3>
+<p>An important practical consideration is the training time required for each model to converge to effective routing policies. Figure 5.5 shows the total training time for both models over 3,000 episodes.</p>
+
+<p>The MA GAT+DT model completes training in 35.51 minutes, while the GAT Baseline requires 75.21 minutes — the proposed model is 52.8% faster. This may seem counterintuitive given that the multi-agent model has 50 independent agents, each with its own policy and target networks. However, several factors contribute to the faster training:</p>
+
+<ol>
+<li><b>Shorter Episodes:</b> Because the MA GAT+DT model finds paths more quickly (3.67 vs. 50.85 hops), each episode requires fewer environment steps, reducing the total number of forward passes through the GAT network.</li>
+<li><b>Better Exploration:</b> The DT features provide meaningful gradient information from the start, reducing the exploration time needed to discover effective routing strategies.</li>
+<li><b>Shared Learning:</b> The shared experience replay pool enables agents to learn from each other's experiences, effectively multiplying the amount of training data available per agent.</li>
+</ol>
+
+<div class="figure">
+<img src="comparison_time_graph.png" alt="Training Time Comparison">
+<p class="caption">Figure 5.5: Training time comparison between MA GAT+DT and GAT Baseline for 3,000 episodes</p>
+</div>
+
+<h3>5.7 Success Rate and Reliability</h3>
+<p>The success rate measures the percentage of episodes in which the agent successfully routes the packet from source to destination within the maximum step limit. Figure 5.6 shows the success rate comparison alongside the Packet Delivery Ratio (PDR).</p>
+
+<p>The MA GAT+DT model achieves a perfect 100% success rate, while the GAT Baseline achieves 93%. The 7 percentage point improvement demonstrates that the combination of Digital Twin awareness and multi-agent coordination not only improves routing efficiency but also improves routing reliability — the agent never fails to deliver a packet when equipped with environmental awareness.</p>
+
+<p>Both models achieve 100% PDR for successfully delivered packets, indicating that once a route is found, packets are delivered without loss. The difference lies in whether a route can be found within the step limit — some source-target pairs in adversarial conditions are challenging for the baseline to route without DT guidance.</p>
+
+<div class="figure">
+<img src="comparison_success_rate_graph.png" alt="Success Rate Comparison">
+<p class="caption">Figure 5.6: Success rate and PDR comparison between MA GAT+DT and GAT Baseline</p>
+</div>
+
+<h3>5.8 Summary of Results</h3>
+<p>The experimental results comprehensively validate the proposed MA DT-GCN framework across all evaluated metrics. Table 5.2 provides a detailed summary of the improvements achieved by the MA GAT+DT model over the GAT Baseline.</p>
+
+<table>
+<caption style="caption-side:top; text-align:center; font-weight:bold; margin-bottom:8px;">Table 5.2: Detailed Improvement Analysis</caption>
+<tr><th>Category</th><th>Metric</th><th>MA GAT+DT</th><th>GAT Baseline</th><th>Change</th></tr>
+<tr><td rowspan="2">Routing Quality</td><td>Average Reward</td><td>0.93</td><td>−17.78</td><td>+18.71</td></tr>
+<tr><td>Average Path Length</td><td>3.67</td><td>50.85</td><td>−92.8%</td></tr>
+<tr><td rowspan="2">Resilience</td><td>Jammed Steps</td><td>0.29</td><td>1.25</td><td>−76.8%</td></tr>
+<tr><td>Success Rate</td><td>100%</td><td>93%</td><td>+7 pp</td></tr>
+<tr><td>Efficiency</td><td>Training Time</td><td>35.51 min</td><td>75.21 min</td><td>−52.8%</td></tr>
+<tr><td>Reliability</td><td>PDR</td><td>100%</td><td>100%</td><td>—</td></tr>
+</table>
+
+<p>The key findings from the experimental evaluation are:</p>
+<ol>
+<li><b>Digital Twin integration dramatically improves routing performance.</b> The three additional DT features (anomaly score, jam probability, neighbor jam average) provide critical environmental awareness that enables proactive jamming avoidance.</li>
+<li><b>Multi-agent coordination enables efficient distributed routing.</b> The 50 independent agents, coordinated through shared experience replay, achieve better path efficiency than the single-agent baseline while training faster.</li>
+<li><b>The enhanced reward function successfully balances multiple objectives.</b> The combination of progress-based rewards, anomaly dampening, jamming penalties, and resilience bonuses guides agents toward paths that are simultaneously short, safe, and resilient.</li>
+<li><b>The framework is computationally efficient.</b> Despite having 50 agents, the MA GAT+DT model trains faster than the single-agent baseline due to faster episode completion and better exploration.</li>
+</ol>
+
+<div class="figure">
+<img src="comparison_results.png" alt="Combined Comparison Results">
+<p class="caption">Figure 5.7: Combined comparison results summary showing reward convergence, performance metrics, training loss, and summary statistics</p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ==================== CHAPTER 6: CONCLUSION ==================== -->
+<h1>CHAPTER 6</h1>
+<h2>CONCLUSION AND FUTURE WORK</h2>
+
+<h3>6.1 Conclusion</h3>
+<p>This dissertation presented a novel framework for resilient routing in Wireless Mesh Networks that integrates Digital Twin modelling, Graph Attention Networks, and Multi-Agent Deep Q-Networks. The proposed MA DT-GCN framework addresses critical gaps in existing research by combining environmental awareness (through Digital Twin integration), topology-aware decision-making (through GAT-based state representation), and distributed routing (through multi-agent coordination).</p>
+
+<p>The key contributions of this work are:</p>
+
+<p><b>1. Digital Twin Integration for Routing:</b> The framework demonstrates, for the first time, the effective integration of Digital Twin-derived environmental features into a GNN-based routing agent. The seven-dimensional node feature vector — combining routing state flags, DT-derived link quality metrics, anomaly scores, and jamming probabilities — provides agents with comprehensive environmental awareness that enables proactive jamming avoidance rather than reactive route recovery.</p>
+
+<p><b>2. Attention-Based Link Quality Assessment:</b> The GAT architecture with edge attribute support enables the attention mechanism to consider link quality (DT-derived latency) when computing attention coefficients. This allows the model to selectively focus on high-quality, non-jammed links during routing decisions, addressing the limitation of GCN-based approaches that treat all neighbour contributions equally.</p>
+
+<p><b>3. Multi-Agent Cooperative Routing:</b> The framework implements 50 independent agents with shared experience replay, enabling distributed decision-making that mirrors the decentralized nature of WMN routing. The shared experience pool with compatibility filtering provides cooperative learning benefits while maintaining independent agent policies.</p>
+
+<p><b>4. Enhanced Reward Function:</b> The multi-component reward function successfully balances routing efficiency with resilience objectives through anomaly dampening, jamming penalties, and resilience bonuses. This reward design enables agents to learn routes that are not only short but also avoid compromised network segments.</p>
+
+<p>Experimental evaluation on a 50-node wireless mesh network over 3,000 training episodes demonstrates that the proposed MA GAT+DT model achieves an average reward of 0.93 (compared to the baseline's −17.78), reduces average path length by 92.8% (from 50.85 to 3.67 hops), decreases jammed steps by 76.8% (from 1.25 to 0.29), achieves 100% success rate (compared to 93% for the baseline), and trains 52.8% faster despite having 50 independent agents.</p>
+
+<p>These results validate the central thesis of this dissertation: that routing the Digital Twin's environmental awareness through the attention mechanism of a GAT-based multi-agent RL system enables WMNs to build genuine resilience against jamming attacks — one where interference is anticipated and routed around before packet loss has a chance to escalate.</p>
+
+<h3>6.2 Future Work</h3>
+<p>While the proposed framework demonstrates significant improvements in resilient routing, several directions for future work can further enhance and extend the system:</p>
+
+<p><b>1. Dynamic Topology Support:</b> The current framework operates on a fixed 50-node topology. Extending the framework to handle dynamic topologies where nodes can join, leave, or move would make it more applicable to real-world scenarios such as mobile ad-hoc networks and disaster response networks. This would require online adaptation of the GAT model to changing graph structures.</p>
+
+<p><b>2. Real-Time Digital Twin Updates:</b> The current implementation uses pre-generated radio maps from the Digital Twin dataset. Integrating real-time radio measurements from physical network deployments would enable true closed-loop Digital Twin operation, where the virtual replica is continuously synchronized with the physical network.</p>
+
+<p><b>3. Advanced Jamming Models:</b> The current jammer model uses a simple distance-based detection with fixed radius. Incorporating more sophisticated jamming models — including reactive jammers, smart jammers that adapt to the routing protocol, and mobile jammers — would provide a more realistic testbed for evaluating the framework's resilience.</p>
+
+<p><b>4. Scalability Evaluation:</b> Evaluating the framework on larger network topologies (100, 200, 500 nodes) would help understand how the multi-agent approach scales with network size. Parameter sharing techniques or hierarchical agent architectures may be needed for very large networks.</p>
+
+<p><b>5. Transfer Learning:</b> Investigating the transferability of learned policies across different network topologies and jamming scenarios would enable faster deployment in new environments without full retraining. The GAT architecture's permutation invariance provides a natural foundation for topology transfer.</p>
+
+<p><b>6. Multi-Objective Optimization:</b> Extending the reward function to explicitly optimize for multiple objectives (latency, bandwidth, energy efficiency, security) using techniques like Pareto-optimal policy search would enable the framework to address more complex QoS requirements.</p>
+
+<p><b>7. Hardware Testbed Validation:</b> Deploying and evaluating the framework on a physical wireless mesh network testbed would validate the simulation results and identify practical challenges in real-world deployment, including communication overhead, computational constraints on node hardware, and the impact of real-world wireless channel conditions.</p>
+
+<p><b>8. Partial Observability:</b> Implementing true partial observability where each agent only has access to local neighbourhood information (rather than the full global graph) would more accurately model the decentralized nature of WMN routing and could potentially improve scalability.</p>
+
+<div class="page-break"></div>
+
+<!-- ==================== REFERENCES ==================== -->
+<h1>REFERENCES</h1>
+
+<div class="ref-list">
+<p>[1] S. S. Bhavanasi, L. Pappone, and F. Esposito, "Dealing with Changes: Resilient Routing via Graph Neural Networks and Multi-Agent Deep Reinforcement Learning," submitted to IEEE Transactions on Network and Service Management (TNSM), Special Issue on Reliable Networks, 2023.</p>
+
+<p>[2] A. Krause, M. D. Khursheed, P. Schulz, F. Burmeister, and G. Fettweis, "Digital Twin of the Radio Environment: A Novel Approach for Anomaly Detection in Wireless Networks," in Proceedings of 2023 IEEE Globecom Workshops: 3rd Workshop on Sustainable and Resilient Industrial Networks (GC 2023 Workshop - SRINetworks), Kuala Lumpur, Malaysia, Dec. 2023.</p>
+
+<p>[3] V. Mnih, K. Kavukcuoglu, D. Silver, A. A. Rusu, J. Veness, M. G. Bellemare, A. Graves, M. Riedmiller, A. K. Fidjeland, G. Ostrovski, S. Petersen, C. Beattie, A. Sadik, I. Antonoglou, H. King, D. Kumaran, D. Wierstra, S. Legg, and D. Hassabis, "Human-level control through deep reinforcement learning," Nature, vol. 518, no. 7540, pp. 529–533, Feb. 2015.</p>
+
+<p>[4] T. N. Kipf and M. Welling, "Semi-Supervised Classification with Graph Convolutional Networks," in Proceedings of the 5th International Conference on Learning Representations (ICLR), Toulon, France, Apr. 2017.</p>
+
+<p>[5] P. Veličković, G. Cucurull, A. Casanova, A. Romero, P. Liò, and Y. Bengio, "Graph Attention Networks," in Proceedings of the 6th International Conference on Learning Representations (ICLR), Vancouver, Canada, Apr. 2018.</p>
+
+<p>[6] Z. Jin, Y. Wang, X. Li, and H. Chen, "Deep Reinforcement Learning-based Resilient Routing for Urban Emergency Communication Networks," IEEE Transactions on Vehicular Technology, vol. 74, no. 1, pp. 15–28, 2025.</p>
+
+<p>[7] R. S. Sutton and A. G. Barto, Reinforcement Learning: An Introduction, 2nd ed. Cambridge, MA: MIT Press, 2018.</p>
+
+<p>[8] Z. Wu, S. Pan, F. Chen, G. Long, C. Zhang, and P. S. Yu, "A Comprehensive Survey on Graph Neural Networks," IEEE Transactions on Neural Networks and Learning Systems, vol. 32, no. 1, pp. 4–24, Jan. 2021.</p>
+
+<p>[9] M. M. Olsson, R. Barr, R. Hague, C. Sherburn, and J. Li, "Digital Twin Technology: An Overview," Annals of the CIRP, vol. 69, no. 1, pp. 629–642, 2020.</p>
+
+<p>[10] L. Busoniu, R. Babuska, and B. De Schutter, "A Comprehensive Survey of Multiagent Reinforcement Learning," IEEE Transactions on Systems, Man, and Cybernetics, Part C, vol. 38, no. 2, pp. 156–172, Mar. 2008.</p>
+
+<p>[11] I. F. Akyildiz, X. Wang, and W. Wang, "Wireless mesh networks: a survey," Computer Networks, vol. 47, no. 4, pp. 445–487, Mar. 2005.</p>
+
+<p>[12] W. Xu, W. Trappe, Y. Zhang, and T. Wood, "The Feasibility of Launching and Detecting Jamming Attacks in Wireless Networks," in Proceedings of ACM MobiHoc, Urbana-Champaign, IL, USA, May 2005, pp. 46–57.</p>
+
+<p>[13] A. Medina, A. Lakhina, I. Matta, and J. Byers, "BRITE: An Approach to Universal Topology Generation," in Proceedings of the Ninth International Symposium on Modeling, Analysis and Simulation of Computer and Telecommunication Systems (MASCOTS), Cincinnati, OH, USA, Aug. 2001.</p>
+
+<p>[14] M. Fey and J. E. Lenssen, "Fast Graph Representation Learning with PyTorch Geometric," in ICLR Workshop on Representation Learning on Graphs and Manifolds, 2019.</p>
+
+<p>[15] A. Paszke, S. Gross, F. Massa, A. Lerer, J. Bradbury, G. Chanan, T. Killeen, Z. Lin, N. Gimelshein, L. Antiga, A. Desmaison, A. Kopf, E. Yang, Z. DeVito, M. Raison, A. Tejani, S. Chilamkurthy, B. Steiner, L. Fang, J. Bai, and S. Chintala, "PyTorch: An Imperative Style, High-Performance Deep Learning Library," in Advances in Neural Information Processing Systems (NeurIPS), vol. 32, 2019.</p>
+
+<p>[16] G. Brockman, V. Cheung, L. Pettersson, J. Schneider, J. Schulman, J. Tang, and W. Zaremba, "OpenAI Gym," arXiv preprint arXiv:1606.01540, 2016.</p>
+
+<p>[17] H. Van Hasselt, A. Guez, and D. Silver, "Deep Reinforcement Learning with Double Q-learning," in Proceedings of the AAAI Conference on Artificial Intelligence, vol. 30, no. 1, Phoenix, AZ, USA, Feb. 2016.</p>
+
+<p>[18] A. Hagberg, P. Swart, and D. S Chult, "Exploring network structure, dynamics, and function using NetworkX," in Proceedings of the 7th Python in Science Conference (SciPy), Pasadena, CA, USA, 2008, pp. 11–15.</p>
+
+<p>[19] Z. Wang, T. Schaul, M. Hessel, H. Van Hasselt, M. Lanctot, and N. De Freitas, "Dueling Network Architectures for Deep Reinforcement Learning," in Proceedings of the 33rd International Conference on Machine Learning (ICML), New York, NY, USA, Jun. 2016.</p>
+
+<p>[20] T. Schaul, J. Quan, I. Antonoglou, and D. Silver, "Prioritized Experience Replay," in Proceedings of the 4th International Conference on Learning Representations (ICLR), San Juan, Puerto Rico, May 2016.</p>
+
+<p>[21] D. P. Kingma and J. Ba, "Adam: A Method for Stochastic Optimization," in Proceedings of the 3rd International Conference on Learning Representations (ICLR), San Diego, CA, USA, May 2015.</p>
+
+<p>[22] M. Grondman, L. Busoniu, G. A. D. Lopes, and R. Babuska, "A Survey of Actor-Critic Reinforcement Learning: Standard and Natural Policy Gradients," IEEE Transactions on Systems, Man, and Cybernetics, Part C, vol. 42, no. 6, pp. 1291–1307, Nov. 2012.</p>
+
+<p>[23] A. Albert and A. Barabási, "Statistical mechanics of complex networks," Reviews of Modern Physics, vol. 74, no. 1, pp. 47–97, Jan. 2002.</p>
+
+<p>[24] C. Perkins, E. Belding-Royer, and S. Das, "Ad hoc On-Demand Distance Vector (AODV) Routing," IETF RFC 3561, Jul. 2003.</p>
+
+<p>[25] T. Clausen and P. Jacquet, "Optimized Link State Routing Protocol (OLSR)," IETF RFC 3626, Oct. 2003.</p>
+</div>
+
+</body>
+</html>
