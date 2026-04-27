@@ -1,0 +1,141 @@
+================================================================================
+                      CHAPTER 6: CONCLUSION
+================================================================================
+
+
+6.1 SUMMARY OF CONTRIBUTIONS
+--------------------------------------------------------------------------------
+
+This dissertation presented a novel framework for resilient routing in Wireless
+Mesh Networks that integrates Digital Twin modelling, Graph Attention Networks,
+and Multi-Agent Deep Q-Networks. The proposed MA DT-GCN framework addresses
+critical gaps in existing research by combining environmental awareness (through
+Digital Twin integration), topology-aware decision-making (through GAT-based
+state representation), and distributed routing (through multi-agent
+coordination).
+
+The key contributions of this work are:
+
+Contribution 1: Digital Twin Integration for Routing
+
+The framework demonstrates the effective integration of Digital Twin-derived
+environmental features into a GNN-based routing agent. The seven-dimensional
+node feature vector provides agents with comprehensive environmental awareness
+enabling proactive jamming avoidance rather than reactive route recovery. By
+feeding anomaly scores, jamming probabilities, and neighbourhood jamming
+averages directly into the GAT as dynamic features, the framework bridges the
+gap between physical-layer awareness and network-layer routing decisions.
+
+The anomaly detection approach -- training on normal behaviour and detecting
+deviations -- is inherently more generalizable than approaches that require
+labeled attack data. This unsupervised anomaly detection strategy can identify
+novel attack types without retraining, as it detects any departure from normal
+behaviour rather than matching known attack signatures.
+
+
+Contribution 2: Attention-Based Link Quality Assessment
+
+The GAT architecture with edge attribute support enables the attention mechanism
+to consider link quality (DT-derived latency) when computing attention
+coefficients, allowing selective focus on high-quality non-jammed links. This
+is a significant advancement over GCN-based approaches that assign uniform
+weights to all neighbours regardless of link quality.
+
+The experimental comparison between the GCN-based and GAT-based variants of
+the framework demonstrates that the attention mechanism provides a substantial
+performance improvement (+12.12 estimated reward improvement). The learned
+attention weights effectively encode routing preferences that favor non-jammed,
+low-latency paths.
+
+
+Contribution 3: Multi-Agent Cooperative Routing
+
+The framework implements 50 independent agents with shared experience replay,
+enabling distributed decision-making that mirrors the decentralized nature of
+WMN routing. Unlike centralized single-agent approaches that must learn the
+entire routing strategy simultaneously, the multi-agent architecture
+decomposes the routing problem into 50 local next-hop decisions, each of which
+is simpler to learn.
+
+The shared experience replay pool provides an elegant mechanism for cooperative
+learning without requiring explicit inter-agent communication. The
+compatibility filtering ensures that shared experiences are meaningful to the
+recipient agent, avoiding the challenges of incompatible action spaces.
+
+
+Contribution 4: Enhanced Reward Function
+
+The multi-component reward function successfully balances routing efficiency
+with resilience objectives through anomaly dampening, jamming penalties, and
+resilience bonuses. The reward function's design -- with separate components for
+different objectives -- enables clear gradient signals that guide agents toward
+balanced routing strategies.
+
+The anomaly dampening component is particularly innovative, as it creates a
+continuous cost gradient that smoothly penalizes routing through degraded areas
+rather than using binary jammed/unjammed classifications. This continuous
+approach enables the agents to learn nuanced routing strategies that balance
+path efficiency with resilience.
+
+
+Summary of Experimental Results:
+
+Experimental evaluation on a 50-node wireless mesh network over 3,000 training
+episodes demonstrates that the proposed MA GAT+DT model achieves:
+
+    * Average reward of 0.93 (vs. baseline -17.78, improvement of +18.71)
+    * Average path length of 3.67 hops (vs. 50.85, reduction of 92.8%)
+    * Average jammed steps of 0.29 (vs. 1.25, reduction of 76.8%)
+    * 100% success rate (vs. 93%, improvement of 7 percentage points)
+    * Training time of 35.51 minutes (vs. 75.21, 52.8% faster)
+
+These results validate the central thesis: routing the Digital Twin's
+environmental awareness through the attention mechanism of a GAT-based
+multi-agent RL system enables WMNs to build genuine resilience against jamming
+attacks -- interference is anticipated and routed around before packet loss
+escalates.
+
+
+6.2 PRACTICAL IMPLICATIONS
+--------------------------------------------------------------------------------
+
+The findings of this dissertation have several practical implications for the
+design and deployment of wireless mesh networks:
+
+    1. Physical-Layer Awareness is Essential for Resilient Routing:
+       Traditional routing protocols that operate solely at the network layer
+       cannot provide adequate resilience against physical-layer attacks such
+       as jamming. The integration of physical-layer information (through
+       Digital Twins) into routing decisions is not merely beneficial but
+       essential for achieving high resilience. Network operators should
+       consider deploying radio environment monitoring systems alongside
+       their mesh networks.
+
+    2. Distributed Decision-Making Outperforms Centralized Approaches:
+       The multi-agent architecture's superiority over the single-agent baseline
+       confirms that routing in mesh networks should be approached as a
+       distributed problem. Rather than investing in centralized routing
+       controllers, network designers should consider distributed learning
+       agents that make local decisions with global context.
+
+    3. Attention Mechanisms Enhance Environmental Feature Utilization:
+       The significant performance improvement from using GAT over GCN
+       demonstrates that not all neighbour information is equally valuable for
+       routing decisions. Network designers should consider attention-based
+       architectures that can selectively weight neighbour contributions based
+       on link quality and environmental conditions.
+
+    4. Proactive Resilience is Achievable:
+       The framework demonstrates that proactive jamming avoidance (routing
+       around jammed areas before experiencing packet loss) is achievable with
+       the right combination of environmental awareness and learning
+       algorithms. This represents a paradigm shift from reactive
+       fault-tolerance to proactive resilience.
+
+    5. Computational Efficiency of Multi-Agent Approaches:
+       The counter-intuitive finding that the 50-agent model trains faster than
+       the single-agent model suggests that multi-agent approaches should be
+       seriously considered for network optimization problems, even in
+       resource-constrained environments.
+
+================================================================================

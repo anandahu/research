@@ -1,0 +1,657 @@
+================================================================================
+                      CHAPTER 4: METHODOLOGY
+================================================================================
+
+This chapter presents the complete technical framework of the proposed
+Multi-Agent Digital Twin Graph Attention Network (MA DT-GCN) system. The
+framework consists of three interconnected modules: the Digital Twin Module for
+environmental awareness, the Graph Attention Network for topology-aware feature
+extraction, and the Multi-Agent Deep Q-Network for distributed routing. This
+chapter also describes the enhanced reward function, training algorithm,
+implementation details, and the technology stack.
+
+
+4.1 SYSTEM OVERVIEW
+--------------------------------------------------------------------------------
+
+The proposed MA DT-GCN framework consists of three interconnected modules that
+work together to achieve resilient routing:
+
+    1. Digital Twin Module -- Environmental awareness through radio map
+       processing, anomaly detection, and jammer identification. This module
+       ingests raw radio environment data and produces enriched node and edge
+       features that capture the current state of the wireless environment.
+
+    2. Graph Attention Network (GAT) -- Topology-aware feature extraction using
+       attention-based message passing. The GAT model takes the enriched feature
+       vectors and the network topology as input, producing node embeddings that
+       capture both local node features and global topological context.
+
+    3. Multi-Agent Deep Q-Network (DQN) -- Distributed routing through 50
+       independent cooperative agents. Each agent uses the GAT embeddings to
+       estimate Q-values for its available routing actions, selecting the
+       optimal next hop for forwarding packets.
+
+The data flow through the framework proceeds as follows: Raw radio environment
+data flows from the Digital Twin Radio Environment dataset into the Digital Twin
+Module, which processes it into node features and edge weights. These features
+are fed into the GAT model along with the network topology (adjacency
+information and edge attributes). The GAT produces node embeddings that are
+flattened and passed through fully connected layers to produce Q-values for each
+agent. The agent with the highest Q-value for the current node selects the
+routing action, and the resulting reward and next state are used to update the
+agent's policy through experience replay.
+
+[IMAGE: See system_architecture_1774691778122.png -- System Architecture of the
+MA DT-GCN Framework showing the three-module design with data flow from the
+Digital Twin through the GAT to the Multi-Agent DQN.]
+
+
+4.2 DIGITAL TWIN MODULE
+--------------------------------------------------------------------------------
+
+The Digital Twin module is the environmental awareness layer of the framework.
+It is implemented through three primary components that transform raw radio
+environment data into actionable features for the routing agents.
+
+
+4.2.1 Mesh Digital Twin
+........................
+
+The Mesh Digital Twin maintains a virtual copy of the physical wireless mesh
+network. It ingests environmental radio maps (41x41 grid arrays of RSS values
+in dBm) and updates link-level quality metrics for all edges in the network.
+
+For each edge (u, v), the RSS values at both endpoint positions are averaged,
+and two transformations are applied:
+
+RSS to Latency (Sigmoidal Transformation):
+
+    latency = 1 / (1 + exp((RSS - RSS_ref) / 30)),  latency in [0.01, 0.99]
+
+where RSS_ref = -70 dBm is the reference signal level. This sigmoidal mapping
+captures the non-linear relationship between signal strength and link
+performance. Strong signals (RSS >> -70 dBm) produce low latency values (close
+to 0), while weak signals (RSS << -70 dBm) produce high latency values (close
+to 1). The choice of -70 dBm as the reference level corresponds to a typical
+threshold between "good" and "degraded" wireless link quality.
+
+RSS to Capacity (Linear Normalization):
+
+    capacity = (RSS + 100) / 50,  capacity in [0.01, 1.0]
+
+The updated latency and capacity values serve as edge weights in the network
+graph, directly influencing shortest path computations and providing edge
+attributes for the GAT attention mechanism. In jammed scenarios, edges near the
+jammer will have elevated latency and reduced effective capacity, naturally
+steering shortest-path computations away from jammed areas.
+
+[IMAGE: See digital_twin_architecture_1774691812465.png -- Digital Twin
+Architecture showing the data flow from radio maps through the Mesh Twin,
+Anomaly Bridge, and Jammer Detector to produce the 7-dimensional feature
+vector.]
+
+
+4.2.2 Anomaly Bridge
+.....................
+
+The Anomaly Bridge converts Digital Twin measurement differences into per-node
+anomaly scores. It operates in two phases:
+
+Training Phase:
+The Anomaly Bridge is trained on measurements from non-jammed scenarios. It
+computes the mean (mu) and standard deviation (sigma) of absolute measurement
+differences across all normal samples and establishes a 2-sigma threshold:
+
+    threshold = mu + 2 * sigma
+
+This statistical approach assumes that normal measurement differences follow a
+Gaussian distribution, and any deviation beyond 2 standard deviations is
+considered anomalous. The 2-sigma threshold provides a balance between
+sensitivity (detecting real anomalies) and specificity (avoiding false alarms).
+Increasing the threshold to 3-sigma would reduce false positives but might miss
+subtle jamming attacks.
+
+Scoring Phase:
+For each scenario, the absolute measurement differences are compared against the
+threshold. Scores are computed on a 0-to-1 scale, where 0 indicates normal
+behaviour and values approaching 1 indicate increasingly anomalous conditions:
+
+    anomaly_score = min(1.0, max(0.0, (|measurement_diff| - mu) / threshold))
+
+Spatial Mapping:
+Measurement point scores are mapped to mesh node scores using nearest-neighbour
+interpolation with distance-based exponential decay. Each mesh node receives an
+anomaly score based on the closest measurement points, weighted by their
+distance:
+
+    node_score = SUM(w_i * score_i) / SUM(w_i)
+    where w_i = exp(-d_i / decay_factor)
+
+This spatial mapping ensures smooth anomaly score transitions across the
+network, avoiding abrupt score changes between adjacent nodes.
+
+
+4.2.3 Jammer Detector
+......................
+
+The Jammer Detector provides per-node jamming probability estimates based on the
+distance to known jammer positions, operating with a configurable jamming radius
+(default: 10 units in DT coordinates, corresponding to approximately 100 meters
+in physical space).
+
+    * Hard Detection: Nodes within the jamming radius are classified as
+      definitively jammed (probability = 1.0). These nodes experience the full
+      force of the jamming signal and their links are severely degraded.
+
+    * Soft Detection: Nodes beyond the jamming radius receive exponentially
+      decaying jamming probabilities based on distance from the nearest jammer:
+
+        jam_probability = exp(-distance / jamming_radius)
+
+      This soft detection captures the reality that jamming effects do not
+      abruptly stop at the radius boundary but gradually decay with distance.
+
+
+4.2.4 Seven-Dimensional Node Feature Vector
+............................................
+
+The Digital Twin module produces a comprehensive seven-dimensional feature
+vector for each node, combining environmental, topological, and routing
+information:
+
++-------+-------------------+-----------------+-----------------------------------+
+| Index | Feature           | Source          | Description                       |
++-------+-------------------+-----------------+-----------------------------------+
+|   0   | is_source         | Environment     | 1.0 if node is current packet     |
+|       |                   |                 | position, 0.0 otherwise           |
++-------+-------------------+-----------------+-----------------------------------+
+|   1   | is_dest           | Environment     | 1.0 if node is the routing target,|
+|       |                   |                 | 0.0 otherwise                     |
++-------+-------------------+-----------------+-----------------------------------+
+|   2   | avg_latency       | Digital Twin    | Mean latency to all neighbour     |
+|       |                   |                 | nodes (0-1 scale)                 |
++-------+-------------------+-----------------+-----------------------------------+
+|   3   | avg_bandwidth     | Digital Twin    | Mean capacity to all neighbour    |
+|       |                   |                 | nodes (0-1 scale)                 |
++-------+-------------------+-----------------+-----------------------------------+
+|   4   | anomaly_score     | Anomaly Bridge  | Anomaly score from DT             |
+|       |                   |                 | measurements (0-1 scale)          |
++-------+-------------------+-----------------+-----------------------------------+
+|   5   | jam_probability   | Jammer Detector | Estimated jamming probability     |
+|       |                   |                 | (0-1 scale)                       |
++-------+-------------------+-----------------+-----------------------------------+
+|   6   | neighbor_jam_avg  | Jammer Detector | Mean jamming probability across   |
+|       |                   |                 | all neighbour nodes               |
++-------+-------------------+-----------------+-----------------------------------+
+
+Table 4.1: Seven-Dimensional Node Feature Vector
+
+The baseline GAT model uses only the first 4 features (with features 4-6 zeroed
+out), enabling a clean evaluation of the DT contribution. By comparing the
+performance of models with and without DT features, the dissertation isolates
+the impact of environmental awareness on routing quality.
+
+Feature 6 (neighbor_jam_avg) is particularly important because it provides
+information about the jamming status of adjacent nodes, enabling the agent to
+anticipate jamming effects one hop ahead. Without this feature, the agent would
+only learn about jamming after routing into a jammed area.
+
+
+4.3 GRAPH ATTENTION NETWORK ARCHITECTURE
+--------------------------------------------------------------------------------
+
+The GAT_DTAware model is a custom Graph Attention Network architecture designed
+specifically for the routing problem. It consists of four layers that
+progressively transform the raw node features into Q-value estimates for routing
+decisions.
+
++-------+----------+------------+------------+------------------+
+| Layer | Type     | Input Dim  | Output Dim | Parameters       |
++-------+----------+------------+------------+------------------+
+| conv1 | GATConv  |     7      |     16     | edge_dim=1       |
+| conv2 | GATConv  |    16      |     25     | edge_dim=1       |
+| fc1   | Linear   |  1,250     |     50     | --               |
+| fc2   | Linear   |    50      | num_neighb.| --               |
++-------+----------+------------+------------+------------------+
+
+Table 4.2: GAT_DTAware Model Architecture
+
+The architecture proceeds as follows:
+
+Layer 1 - First GATConv:
+Input: 7-dimensional node feature vectors for all 50 nodes, plus edge attributes
+(DT-derived latency values) for all edges.
+Output: 16-dimensional node embeddings.
+The first GAT layer applies attention-weighted message passing to aggregate
+information from neighbouring nodes. The edge_dim=1 parameter enables the
+attention mechanism to incorporate the scalar edge attribute (latency) into the
+attention coefficient computation.
+
+Layer 2 - Second GATConv:
+Input: 16-dimensional embeddings from the first layer.
+Output: 25-dimensional node embeddings with SELU activation.
+The second GAT layer further refines the node embeddings through another round
+of attention-based aggregation. The SELU activation function provides
+self-normalizing properties that help stabilize training.
+
+Layer 3 - First Fully Connected Layer:
+Input: Flattened embeddings (50 nodes x 25 dimensions = 1,250).
+Output: 50-dimensional vector.
+The fully connected layer transforms the global graph representation into a
+compact feature vector. The flattening operation concatenates all node
+embeddings, giving the network a global view of the entire topology.
+
+Layer 4 - Second Fully Connected Layer:
+Input: 50-dimensional vector.
+Output: Q-values for each possible action (num_neighbors for multi-agent, or 50
+for single-agent).
+The final layer produces the Q-value estimates used for action selection.
+
+
+4.3.1 Attention Mechanism Analysis
+...................................
+
+The attention mechanism in the GAT layers computes pairwise importance scores
+between neighbouring nodes. For a node i and its neighbour j, the attention
+coefficient is computed as:
+
+    e_ij = LeakyReLU(a^T * [W * h_i || W * h_j || edge_attr_ij])
+
+    alpha_ij = softmax_j(e_ij) = exp(e_ij) / SUM_{k in N_i} exp(e_ik)
+
+where W is the weight matrix, a is the attention parameter vector, || denotes
+concatenation, and edge_attr_ij is the Digital Twin-derived edge attribute.
+
+The inclusion of edge attributes in the attention computation is a critical
+design decision. Without edge attributes, the attention mechanism would rely
+solely on node features to determine neighbour importance. By including
+DT-derived latency values as edge attributes, the attention mechanism can
+directly assess link quality when computing attention weights.
+
+Worked Example:
+Consider node i with three neighbours j1, j2, and j3. Suppose j2 is near a
+jammer, resulting in:
+    - Edge (i, j1): latency = 0.2 (good link)
+    - Edge (i, j2): latency = 0.8 (degraded link near jammer)
+    - Edge (i, j3): latency = 0.3 (moderate link)
+
+The attention mechanism would assign higher attention weights to j1 and j3
+(good links) and lower weight to j2 (degraded link), effectively downweighting
+information from the jammed area. This selective aggregation enables the
+resulting node embeddings to emphasize information from healthy parts of the
+network.
+
+
+4.3.2 Edge Attribute Integration
+.................................
+
+The edge attribute integration in PyTorch Geometric's GATConv follows the
+approach described by Brody et al. (2022) in "How Attentive are Graph Attention
+Networks?" The edge attributes are projected to the attention dimension and
+added to the attention logits:
+
+    e_ij = a^T * [W_src * h_i || W_dst * h_j] + W_edge * edge_attr_ij
+
+This additive integration allows edge features to directly influence the
+attention computation without modifying the node feature space. The learnable
+projection matrix W_edge enables the model to determine how much weight to give
+to link quality information versus node feature information.
+
+In the proposed framework, the edge attribute is a scalar representing the
+DT-derived latency value for each link. The projection W_edge maps this scalar
+to the attention dimension, effectively creating a "link quality bias" that
+shifts attention weights toward low-latency (high-quality) links.
+
+The impact of edge attribute integration can be observed in the difference
+between the DT-aware model (which passes real latency values) and the baseline
+model (which passes constant edge attributes). The DT-aware model learns to
+route around degraded links by attending more to high-quality neighbours, while
+the baseline model treats all links equally.
+
+
+4.4 MULTI-AGENT DEEP Q-NETWORK
+--------------------------------------------------------------------------------
+
+The Multi-Agent system implements cooperative routing with 50 independent DQN
+agents, one per network node. Each agent learns to forward packets to the
+optimal neighbour based on the current network state.
+
+
+4.4.1 Node Agent Architecture
+..............................
+
+Each NodeAgent consists of:
+
+    * Policy Network: GAT_DTAware model for action selection. The policy network
+      takes the current graph state (node features, edge indices, edge
+      attributes) and outputs Q-values for each possible next-hop action. The
+      output dimension equals the number of neighbours for the agent's node.
+
+    * Target Network: Separate GAT_DTAware model for computing target Q-values.
+      The target network has the same architecture as the policy network but is
+      updated less frequently (via soft updates), providing more stable target
+      values for training.
+
+    * Replay Memory: Per-agent buffer with capacity 20,000 transitions. Each
+      transition stores (state, action, reward, next_state, done) tuples.
+
+    * Optimizer: Adam optimizer with learning rate 0.001 and default betas
+      (0.9, 0.999).
+
+
+4.4.2 Shared Experience Replay
+..............................
+
+A global SharedReplayMemory pool (capacity 50,000 transitions) enables
+cooperative learning across agents. The pool implements compatibility filtering
+-- agents can only sample transitions from other agents with the same number of
+neighbours. This filtering is necessary because the Q-value output dimension
+depends on the number of neighbours, and agents with different numbers of
+neighbours have incompatible action spaces.
+
+Sampling strategy: 60% own transitions + 40% shared transitions per training
+batch. This 60/40 split balances the benefits of individual experience (which
+is directly relevant to the agent's specific position in the network) with
+shared experience (which provides broader coverage of the state space and
+accelerates learning).
+
+The shared replay pool implements a circular buffer that overwrites the oldest
+transitions when the capacity is reached. Each transition in the shared pool
+is tagged with the source agent's ID and number of neighbours, enabling the
+compatibility filtering during sampling.
+
+
+4.4.3 Target Network Updates
+.............................
+
+Target networks use soft updates (Polyak averaging) every 10 episodes:
+
+    theta_target <- tau * theta_policy + (1 - tau) * theta_target,  tau = 0.005
+
+The soft update approach (tau = 0.005) provides smoother target transitions
+compared to the hard updates (periodic full copy) used in the single-agent
+baseline. Soft updates reduce the risk of destabilizing the training process
+by limiting the magnitude of target network changes at each update step.
+
++-----------------------------+----------------+------------------+
+| Parameter                   | Single-Agent   | Multi-Agent      |
++-----------------------------+----------------+------------------+
+| Learning Rate               | 0.001          | 0.001            |
+| Discount Factor (gamma)     | 0.99           | 0.99             |
+| Batch Size                  | 128            | 32               |
+| Replay Memory Size          | 5,000          | 20,000/agent +   |
+|                             |                | 50,000 shared    |
+| Epsilon Start -> End        | 0.95 -> 0.001  | 0.95 -> 0.001    |
+| Epsilon Decay               | 1,000 steps    | 1,500 episodes   |
+| Target Update               | Every 14,000   | Every 10 eps     |
+|                             | steps (hard)   | (soft, tau=0.005)|
+| Loss Function               | Smooth L1      | Smooth L1        |
+|                             | (Huber)        | (Huber)          |
+| Gradient Clipping           | Max norm = 1.0 | Max norm = 1.0   |
++-----------------------------+----------------+------------------+
+
+Table 4.3: DQN Hyperparameter Comparison
+
+
+4.4.4 Exploration Strategy
+..........................
+
+The framework uses an epsilon-greedy exploration strategy with exponential
+decay:
+
+    epsilon(t) = epsilon_end + (epsilon_start - epsilon_end) * exp(-t / decay)
+
+where epsilon_start = 0.95, epsilon_end = 0.001, and decay = 1,500 episodes
+for the multi-agent model.
+
+The exploration schedule can be divided into three phases:
+
+    Phase 1 - High Exploration (Episodes 1-300):
+    Epsilon > 0.7. Agents predominantly select random actions, exploring the
+    state space broadly. This phase is critical for populating the replay buffer
+    with diverse experiences.
+
+    Phase 2 - Balanced Exploration (Episodes 300-1000):
+    Epsilon between 0.3 and 0.7. Agents balance random exploration with
+    exploitation of learned policies. This phase is when agents begin to
+    discover effective routing strategies.
+
+    Phase 3 - Exploitation (Episodes 1000-3000):
+    Epsilon < 0.3, approaching 0.001. Agents primarily exploit their learned
+    policies, with occasional random actions to maintain exploration. This phase
+    refines and stabilizes the learned routing strategies.
+
+The multi-agent model uses episode-level epsilon decay (1,500 episodes) rather
+than step-level decay (1,000 steps) used in the single-agent baseline. This
+slower decay gives each agent more time to explore before transitioning to
+exploitation, which is important because multi-agent environments have a larger
+effective state space due to the interactions between agents.
+
+
+4.4.5 Loss Function and Gradient Optimization
+..............................................
+
+The training objective is to minimize the Smooth L1 (Huber) loss between
+predicted Q-values and target Q-values:
+
+    L = SmoothL1Loss(Q_predicted, Q_target)
+
+where:
+
+    Q_predicted = Q_policy(s, a)  [the Q-value of the taken action]
+
+    Q_target = r + gamma * max_a' Q_target_network(s', a')  [if not terminal]
+    Q_target = r  [if terminal state]
+
+The Smooth L1 loss combines the benefits of L1 loss (robustness to outliers)
+and L2 loss (smooth gradients near zero):
+
+    SmoothL1(x) = 0.5 * x^2      if |x| < 1
+    SmoothL1(x) = |x| - 0.5      if |x| >= 1
+
+This loss function is preferred over MSE (L2) loss because the reward function
+can produce large occasional penalties (e.g., -1.51 for suboptimal arrival,
+-1.0 for timeout), which would cause large gradients and training instability
+under L2 loss.
+
+Gradient clipping with max_norm = 1.0 is applied to prevent gradient explosion:
+
+    if ||gradient|| > 1.0:
+        gradient <- gradient * (1.0 / ||gradient||)
+
+The Adam optimizer (Kingma and Ba, 2015) handles the per-parameter adaptive
+learning rate, which is particularly important in the multi-agent setting where
+different agents may experience different gradient magnitudes depending on their
+position in the network.
+
+
+4.5 REWARD FUNCTION DESIGN
+--------------------------------------------------------------------------------
+
+The reward function consists of four components balancing routing efficiency
+with resilience. The multi-component design ensures that agents learn routing
+strategies that are simultaneously short, safe, and resilient.
+
+[IMAGE: See reward_function_1774691796682.png -- Reward Function Components
+showing the four-component design: base reward, anomaly dampening, jamming
+penalty, and resilience bonus.]
+
+
+4.5.1 Base Reward
+
+Based on A* shortest path progress:
+
+    * Reached target optimally: +1.01 (arrived at destination via shortest path)
+    * Reached target suboptimally: -1.51 (arrived but path was significantly
+      longer than optimal)
+    * Progress toward target: d_old - d_new (positive if moved closer to
+      destination, proportional to progress made)
+    * Moved away from target: -1.0 (penalty for moving farther from destination)
+    * Timeout (path > 10 x num_nodes): -1.0 (penalty for failing to reach
+      destination within step limit)
+
+The asymmetry between the optimal arrival bonus (+1.01) and suboptimal arrival
+penalty (-1.51) strongly incentivizes agents to find the shortest path rather
+than any path. This prevents lazy routing strategies where agents take
+unnecessarily long paths.
+
+
+4.5.2 Anomaly Dampening
+
+    R_dampened = R_base x (1 - alpha x anomaly_score),  alpha = 0.3
+
+The anomaly dampening factor reduces the effective reward in areas with high
+anomaly scores. This creates an implicit cost for routing through anomalous
+areas: even if the base reward is positive (indicating progress toward the
+target), the dampening reduces the effective reward, encouraging agents to seek
+alternative routes through non-anomalous areas.
+
+
+4.5.3 Jamming Penalty
+
+    R_jam = -lambda  (if current node is jammed),  lambda = 0.5
+
+A fixed penalty of 0.5 is applied whenever the agent routes through a jammed
+node. This direct penalty provides a clear signal that jammed areas should be
+avoided, complementing the more subtle anomaly dampening.
+
+
+4.5.4 Resilience Bonus
+
+    R_resilience = +0.3  (if reached target successfully, jammed nodes exist
+                          in the scenario, and the path avoids all of them)
+
+The resilience bonus rewards agents for demonstrating proactive jamming
+avoidance. It is only awarded when all three conditions are met: successful
+delivery, jammed nodes present in the scenario, and the path does not pass
+through any jammed node. This encourages agents to develop routing strategies
+that are resilient to jamming rather than merely successful.
+
++-------------------------+--------+-------+----------------------------+
+| Parameter               | Symbol | Value | Effect                     |
++-------------------------+--------+-------+----------------------------+
+| Anomaly Dampening       | alpha  |  0.3  | Reduces reward in          |
+|                         |        |       | anomalous areas            |
+| Jamming Penalty         | lambda |  0.5  | Fixed penalty for jammed   |
+|                         |        |       | nodes                      |
+| Resilience Bonus        |   --   |  0.3  | Bonus for clean jam-free   |
+|                         |        |       | paths                      |
++-------------------------+--------+-------+----------------------------+
+
+Table 4.4: Reward Function Parameters
+
+
+4.6 TRAINING ALGORITHM
+--------------------------------------------------------------------------------
+
+Algorithm: Resilient Routing with MA DT-GCN
+
+1. INITIALIZE:
+   - Load BRITE topology and create NetworkX graph
+   - Initialize Digital Twin with radio map dataset
+   - Train Anomaly Bridge on 2,000 normal scenarios
+   - Create 50 NodeAgents, each with policy and target GAT networks
+   - Initialize per-agent replay buffers B_i (capacity 20,000)
+   - Initialize shared replay pool (capacity 50,000)
+   - Set epsilon = 0.95
+
+2. FOR each training episode e = 1 to 3,000:
+
+   a. RESET: Select random source-destination pair. Select random radio map
+      scenario (50% jammed, 50% normal). Initialize packet at source node.
+
+   b. DIGITAL TWIN UPDATE: Retrieve radio map for this scenario. Update Mesh
+      Twin edge weights (latency, capacity). Compute anomaly scores via Anomaly
+      Bridge. Compute jamming probabilities via Jammer Detector.
+
+   c. STATE REPRESENTATION: For each node i, construct the 7-dimensional
+      feature vector x_i = [is_source, is_dest, avg_latency, avg_bandwidth,
+      anomaly_score, jam_probability, neighbor_jam_avg].
+
+   d. WHILE packet not at destination and steps < max_steps (500):
+
+      i.   GAT ATTENTION: Compute node embeddings h_i by running the full graph
+           through the GAT model with edge attributes.
+
+      ii.  ACTION SELECTION: Get current node's agent. With probability epsilon,
+           select random neighbour; otherwise select neighbour with highest
+           Q-value from the agent's policy network. Apply action masking to
+           ensure only valid neighbours are selectable.
+
+      iii. EXECUTE action: Forward packet to selected neighbour. Update current
+           node position.
+
+      iv.  COMPUTE REWARD: Calculate base reward (progress toward target).
+           Apply anomaly dampening. Apply jamming penalty if on jammed node.
+           Apply resilience bonus if applicable.
+
+      v.   OBSERVE next state: Update feature vectors (is_source changes to
+           reflect new packet position).
+
+      vi.  STORE transition (state, action, reward, next_state, done) in the
+           current agent's replay buffer B_i and the shared replay pool.
+
+      vii. EXPERIENCE REPLAY: If buffer has enough samples, sample mini-batch
+           (60% from B_i, 40% from shared pool with compatibility filtering).
+           Compute target Q-values using target network. Compute loss using
+           Smooth L1 loss. Backpropagate and update policy network weights with
+           gradient clipping (max_norm = 1.0).
+
+   e. DECAY exploration rate: epsilon = epsilon_end + (epsilon_start -
+      epsilon_end) * exp(-e / decay)
+
+   f. SOFT UPDATE target networks every 10 episodes:
+      theta_target <- 0.005 * theta_policy + 0.995 * theta_target
+
+   g. LOG metrics: episode reward, path length, jammed steps, success,
+      training time.
+
+3. SAVE trained model weights and training metrics to CSV.
+
+
+4.7 TECHNOLOGY STACK
+--------------------------------------------------------------------------------
+
++-------------------------+-----------------------+---------------------------+
+| Component               | Technology            | Purpose                   |
++-------------------------+-----------------------+---------------------------+
+| Programming Language    | Python 3.10+          | Core implementation       |
+| Deep Learning Framework | PyTorch               | Neural network training   |
+| Graph Neural Networks   | PyTorch Geometric(PyG)| GATConv layers, graph data|
+| Graph Processing        | NetworkX              | Topology, shortest paths  |
+| RL Environment          | OpenAI Gym            | Environment interface     |
+| Scientific Computing    | NumPy                 | Array operations, radio   |
+|                         |                       | maps                      |
+| Data Analysis           | Pandas                | Metrics recording, CSV    |
+|                         |                       | output                    |
+| Visualization           | Matplotlib            | Training graphs           |
+| Topology Generation     | BRITE                 | Network topology files    |
+| GPU Acceleration        | CUDA                  | Optional GPU training     |
++-------------------------+-----------------------+---------------------------+
+
+Table 4.5: Technology Stack
+
+The implementation is organized as a Python package (integrated_dt_gcn) with
+the following module structure:
+
+    integrated_dt_gcn/
+    |-- config.py                    # Centralized hyperparameters
+    |-- brite_loader.py              # BRITE topology parser
+    |-- dataset_loader.py            # DT dataset loader
+    |-- digital_twin/
+    |   |-- mesh_twin.py             # Virtual network replica
+    |   |-- anomaly_bridge.py        # Anomaly detection & jammer detection
+    |-- environment/
+    |   |-- hybrid_env.py            # OpenAI Gym routing environment
+    |   |-- enhanced_reward.py       # Multi-component reward function
+    |-- models/
+    |   |-- gat_dt_aware.py          # GAT model + single-agent DQN
+    |   |-- multi_agent.py           # Multi-agent coordinator
+
+    Training Scripts:
+    - train_integrated.py    -- Single-agent training
+    - train_multi_agent.py   -- Multi-agent training
+    - compare_models.py      -- Comparative evaluation
+
+================================================================================

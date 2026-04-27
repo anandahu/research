@@ -1,0 +1,262 @@
+================================================================================
+                  CHAPTER 3: DATASET DESCRIPTION
+================================================================================
+
+This chapter describes the two primary datasets used in this work: the
+BRITE-generated network topology and the Digital Twin Radio Environment dataset.
+The chapter details the data formats, preprocessing steps, statistical
+properties, and the data pipeline that connects raw datasets to the training
+framework.
+
+
+3.1 NETWORK TOPOLOGY DATASET
+--------------------------------------------------------------------------------
+
+The network topology is generated using the BRITE (Boston University
+Representative Internet Topology Generator) tool, developed by Medina et al.
+(2001). BRITE is a universal topology generation tool that supports multiple
+generation models and enables the creation of realistic network topologies for
+simulation and analysis.
+
+The generated topology consists of 50 nodes and 100 bidirectional edges,
+following the Barabasi-Albert preferential attachment model. The Barabasi-Albert
+model, introduced by Albert and Barabasi (2002), generates scale-free networks
+where the degree distribution follows a power law. In this model, new nodes are
+added to the network one at a time, with each new node connecting to existing
+nodes with a probability proportional to their current degree. This
+"rich-get-richer" mechanism produces topologies where a few hub nodes have many
+connections while most nodes have relatively few -- a pattern commonly observed
+in real-world networks including the Internet backbone and wireless mesh
+deployments.
+
+The topology file (50nodes.brite) provides the following information:
+
+    Node Data:
+    * Node ID (0 to 49)
+    * X coordinate (ranging 0 to 99 in BRITE space)
+    * Y coordinate (ranging 0 to 99 in BRITE space)
+
+    Edge Data:
+    * Source node ID
+    * Destination node ID
+    * Default weight (1.0)
+    * Default capacity (1.0)
+
+Node positions are scaled from BRITE coordinates (0-99) to Digital Twin
+coordinates (0-40) using a scaling factor of 0.4. This mapping aligns the
+network nodes with the 41x41 radio map grid used by the Digital Twin, ensuring
+that each node's position corresponds to a valid grid cell in the radio
+environment data.
+
+[IMAGE: See network_topology.png -- Network Topology Visualization showing
+the 50-node WMN with 100 bidirectional edges generated using BRITE. Hub nodes
+with higher connectivity are clearly visible, demonstrating the scale-free
+property of the Barabasi-Albert model.]
+
+
+3.2 DIGITAL TWIN RADIO ENVIRONMENT DATASET
+--------------------------------------------------------------------------------
+
+The Digital Twin Radio Environment dataset, developed by Krause et al. (2023),
+provides realistic radio propagation data for anomaly detection and jamming
+analysis. The dataset is stored as Python pickle files and comprises three
+components:
+
++-------------------+-------------------------+----------------------------+--------+
+| Dataset Component | File Format             | Contents                   | Size   |
++-------------------+-------------------------+----------------------------+--------+
+| Radio Map Dataset | fspl_RMdataset{N}.pkl   | 41x41 RSS grid arrays (dBm)| 30,000 |
+| Measurement Data  | fspl_measurements{N}.pkl| Measurement differences,   | 30,000 |
+|                   |                         | jammer labels, coordinates |        |
+| Path Loss Dataset | fspl_PLdataset{N}.pkl   | Path loss maps             | 30,000 |
++-------------------+-------------------------+----------------------------+--------+
+
+Table 3.1: Digital Twin Radio Environment Dataset Components
+
+
+Radio Maps:
+
+Each scenario in the radio map dataset contains a 41x41 grid array of Received
+Signal Strength (RSS) values in dBm. The RSS values represent the signal
+strength at each grid point, accounting for path loss, shadowing, and (in jammed
+scenarios) interference from active jammers. The grid resolution corresponds to
+a physical measurement spacing of approximately 10 meters, covering a total area
+of approximately 400 x 400 meters.
+
+The RSS values in the dataset range from approximately -100 dBm (very weak
+signal) to -30 dBm (strong signal). In jammed scenarios, the RSS values in the
+vicinity of the jammer exhibit elevated levels due to the jammer's interference
+signal, which adds to the ambient noise floor. The spatial distribution of RSS
+values reflects the Free-Space Path Loss (FSPL) model augmented with jammer
+interference patterns.
+
+
+Measurement Data:
+
+Each scenario includes 25 measurement points, each with:
+
+    * Measurement coordinates (x, y positions in the DT grid)
+    * Measurement differences (the discrepancy between expected and actual RSS
+      values)
+    * Jammer labels (boolean indicating whether the scenario includes active
+      jammers)
+    * Jammer positions (x, y coordinates of active jammers when present)
+
+The measurement differences are the key input to the Anomaly Bridge component.
+In normal (unjammed) scenarios, measurement differences are small and follow a
+Gaussian distribution centered around zero. In jammed scenarios, measurement
+points near the jammer exhibit significantly larger differences due to the
+unexpected interference signal.
+
+
+Scenario Distribution:
+
+Approximately 50% of the 30,000 scenarios include one or more active jammers,
+while the remaining 50% represent normal (unjammed) conditions. This balanced
+distribution ensures that the training framework is exposed to both conditions
+equally, preventing bias toward either jammed or unjammed routing strategies.
+
+
+3.3 TRAINING DATA SPLIT
+--------------------------------------------------------------------------------
+
+For anomaly detection training, the Anomaly Bridge module is trained on
+measurement differences from 2,000 normal (non-jammed) samples. This
+unsupervised approach establishes a statistical baseline of normal behaviour,
+against which anomalous (jammed) conditions can be identified using a 2-sigma
+threshold -- requiring no labeled attack examples for training. The use of only
+normal samples for training means the anomaly detector does not need to be
+retrained when new attack types emerge, as it detects any deviation from normal
+behaviour rather than recognizing specific attack signatures.
+
+During routing agent training, the environment randomly selects scenarios from
+the full dataset with 50% probability of selecting a jammed scenario and 50%
+probability of selecting a normal scenario, ensuring balanced exposure to both
+conditions over 3,000 training episodes. This balanced sampling strategy
+prevents the agents from developing routing policies that are overly optimized
+for either condition.
+
+
+3.4 BRITE TOPOLOGY PROPERTIES
+--------------------------------------------------------------------------------
+
+The generated BRITE topology exhibits several important structural properties
+that influence the routing problem:
+
+Degree Distribution:
+
+The Barabasi-Albert model produces a scale-free network where the degree
+distribution follows a power law: P(k) ~ k^(-gamma), where gamma is typically
+between 2 and 3. In the generated 50-node topology:
+
+    * Minimum degree: 1 (leaf nodes)
+    * Maximum degree: approximately 10-12 (hub nodes)
+    * Average degree: 4.0 (since 100 edges / 50 nodes = 2 edges/node average,
+      but bidirectional edges give average degree 4.0)
+    * Degree variance: High, reflecting the scale-free property
+
+The presence of hub nodes creates natural bottlenecks in the network. If a hub
+node is jammed, the impact is disproportionately large because many paths pass
+through it. This property makes the routing problem particularly challenging and
+motivates the need for DT-aware routing that can detect and avoid jammed hubs.
+
+Clustering Coefficient:
+
+The clustering coefficient measures the tendency of nodes to form tightly
+connected clusters. The Barabasi-Albert model typically produces networks with
+moderate clustering coefficients. In the generated topology, the average
+clustering coefficient provides insight into the local connectivity structure
+that the GAT attention mechanism can exploit.
+
+Network Diameter:
+
+The diameter of the network (the longest shortest path between any pair of
+nodes) determines the theoretical maximum number of hops required for routing.
+The Barabasi-Albert model produces "small-world" topologies where the diameter
+grows logarithmically with the number of nodes, ensuring that even in a 50-node
+network, most node pairs are separated by only a few hops.
+
+Path Redundancy:
+
+The mesh topology provides multiple alternative paths between most node pairs.
+This redundancy is essential for resilient routing, as it ensures that
+alternative routes are available when the primary path is disrupted by jamming.
+The number of node-disjoint paths between hub nodes is typically higher than
+between leaf nodes.
+
+
+3.5 RADIO MAP VISUALIZATION
+--------------------------------------------------------------------------------
+
+The radio map data provides a rich spatial representation of the radio
+environment that can be visualized to understand jamming patterns:
+
+Normal Scenarios:
+
+In normal scenarios, the RSS distribution follows the FSPL model, with signal
+strength decreasing monotonically with distance from the base station. The
+41x41 grid shows a smooth gradient of RSS values, with the strongest signal
+(-30 to -40 dBm) near the transmitter and the weakest signal (-90 to -100 dBm)
+at the grid boundaries.
+
+Jammed Scenarios:
+
+In jammed scenarios, the RSS distribution shows a distinctive "hotspot" pattern
+centered on the jammer position. The jammer's interference signal creates an
+area of elevated RSS values that disrupts the normal propagation pattern. The
+impact radius of the jammer depends on its transmit power and the propagation
+environment.
+
+The spatial correlation between jammer positions and node positions determines
+which nodes are most affected by jamming. Nodes within the jammer's effective
+radius experience degraded link quality, while nodes outside the radius continue
+to operate normally. The Digital Twin module exploits this spatial information
+to provide per-node jamming probability estimates.
+
+
+3.6 DATA PREPROCESSING PIPELINE
+--------------------------------------------------------------------------------
+
+The data preprocessing pipeline transforms raw dataset files into the format
+required by the training framework:
+
+Step 1 - Topology Loading:
+The BRITE topology file is parsed by the brite_loader module, which creates a
+NetworkX graph object with node positions and edge connectivity. Node positions
+are scaled from BRITE coordinates to DT coordinates using the 0.4 scaling
+factor.
+
+Step 2 - Dataset Loading:
+The dataset_loader module loads pickle files for radio maps, measurements, and
+path loss data. Memory-efficient loading is used to handle the large dataset
+sizes (30,000 scenarios per component).
+
+Step 3 - Digital Twin Initialization:
+The MeshDigitalTwin is initialized with the network topology and a reference
+radio map (the first scenario in the dataset). It pre-computes edge mappings
+and initializes latency and capacity values for all edges.
+
+Step 4 - Anomaly Bridge Training:
+The AnomalyBridge is trained on the first 2,000 non-jammed measurement
+scenarios. It computes the statistical baseline (mean and standard deviation of
+measurement differences) and establishes the anomaly detection threshold.
+
+Step 5 - Environment Initialization:
+The OpenAI Gym environment (hybrid_env) is initialized with the topology,
+Digital Twin, and dataset. The environment handles per-episode scenario
+selection, feature vector construction, and reward computation.
+
+Step 6 - Feature Vector Construction:
+For each training episode, the environment constructs the 7-dimensional feature
+vector for each node by:
+    a. Setting source/destination indicators (features 0-1)
+    b. Computing average latency and bandwidth from DT edge weights (features
+       2-3)
+    c. Computing anomaly scores from the Anomaly Bridge (feature 4)
+    d. Computing jamming probabilities from the Jammer Detector (features 5-6)
+
+This preprocessing pipeline ensures that all components are properly
+initialized and synchronized before training begins, and that the data flow
+from raw datasets to training features is consistent and reproducible.
+
+================================================================================

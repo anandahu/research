@@ -1,0 +1,218 @@
+================================================================================
+                          APPENDIX
+================================================================================
+
+
+APPENDIX A: LIST OF ABBREVIATIONS
+--------------------------------------------------------------------------------
+
++----------+------------------------------------------------------------+
+| Abbrev.  | Full Form                                                  |
++----------+------------------------------------------------------------+
+| WMN      | Wireless Mesh Network                                      |
+| DT       | Digital Twin                                               |
+| GNN      | Graph Neural Network                                       |
+| GAT      | Graph Attention Network                                    |
+| GCN      | Graph Convolutional Network                                |
+| DQN      | Deep Q-Network                                             |
+| DRL      | Deep Reinforcement Learning                                |
+| RL       | Reinforcement Learning                                     |
+| MDP      | Markov Decision Process                                    |
+| DDQN     | Double Deep Q-Network                                      |
+| MA DT-GCN| Multi-Agent Digital Twin Graph Convolutional Network        |
+| RSS      | Received Signal Strength                                   |
+| RSSI     | Received Signal Strength Indicator                         |
+| PDR      | Packet Delivery Ratio                                      |
+| QoS      | Quality of Service                                         |
+| IoT      | Internet of Things                                         |
+| PyG      | PyTorch Geometric                                          |
+| BRITE    | Boston University Representative Internet Topology Generator|
+| AODV     | Ad hoc On-Demand Distance Vector                           |
+| OLSR     | Optimized Link State Routing                               |
+| HWMP     | Hybrid Wireless Mesh Protocol                              |
+| FSPL     | Free-Space Path Loss                                       |
+| MARL     | Multi-Agent Reinforcement Learning                         |
+| CTDE     | Centralized Training with Decentralized Execution          |
+| MPNN     | Message Passing Neural Network                             |
+| PPO      | Proximal Policy Optimization                               |
+| MAPPO    | Multi-Agent Proximal Policy Optimization                   |
+| URLLC    | Ultra-Reliable Low-Latency Communication                   |
+| mMTC     | Massive Machine-Type Communication                         |
+| eMBB     | Enhanced Mobile Broadband                                  |
+| SELU     | Scaled Exponential Linear Unit                             |
+| FC       | Fully Connected (layer)                                    |
++----------+------------------------------------------------------------+
+
+
+APPENDIX B: MODULE ARCHITECTURE
+--------------------------------------------------------------------------------
+
+The codebase is organized under the integrated_dt_gcn package:
+
+    integrated_dt_gcn/
+    |-- config.py                    # Centralized hyperparameters
+    |-- brite_loader.py              # BRITE topology parser
+    |-- dataset_loader.py            # DT dataset loader
+    |-- digital_twin/
+    |   |-- mesh_twin.py             # Virtual network replica
+    |   |-- anomaly_bridge.py        # Anomaly detection & jammer detection
+    |-- environment/
+    |   |-- hybrid_env.py            # OpenAI Gym routing environment
+    |   |-- enhanced_reward.py       # Multi-component reward function
+    |-- models/
+    |   |-- gat_dt_aware.py          # GAT model + single-agent DQN
+    |   |-- multi_agent.py           # Multi-agent coordinator
+
+Training scripts:
+    * train_integrated.py    -- Single-agent training
+    * train_multi_agent.py   -- Multi-agent training
+    * compare_models.py      -- Comparative evaluation
+
+Module Descriptions:
+
+    config.py: Contains all hyperparameters including learning rates, epsilon
+    decay parameters, reward function parameters, and network architecture
+    specifications. Centralizing configuration enables easy experimentation
+    and reproducibility.
+
+    brite_loader.py: Parses BRITE topology files (.brite format) and creates
+    NetworkX graph objects with node positions and edge connectivity. Handles
+    coordinate scaling from BRITE space to DT space.
+
+    dataset_loader.py: Loads Digital Twin Radio Environment dataset files
+    (pickle format) including radio maps, measurements, and path loss data.
+    Provides efficient access to individual scenarios by index.
+
+    mesh_twin.py: Implements the Mesh Digital Twin that maintains a virtual
+    copy of the network. Processes radio maps to update edge-level latency
+    and capacity values using sigmoidal and linear transformations.
+
+    anomaly_bridge.py: Implements both the Anomaly Bridge (statistical anomaly
+    detection from measurement differences) and the Jammer Detector (distance-
+    based jamming probability estimation). Provides per-node anomaly scores
+    and jamming probabilities.
+
+    hybrid_env.py: Implements the OpenAI Gym environment interface for the
+    routing problem. Manages episode initialization, state transitions, step
+    execution, and integration with the Digital Twin for feature vector
+    construction.
+
+    enhanced_reward.py: Implements the multi-component reward function with
+    base rewards, anomaly dampening, jamming penalties, and resilience bonuses.
+
+    gat_dt_aware.py: Implements the GAT_DTAware model with two GATConv layers
+    and two fully connected layers. Also implements the single-agent DQN
+    trainer with experience replay and target network updates.
+
+    multi_agent.py: Implements the NodeAgent class (with per-agent policy and
+    target networks), the SharedReplayMemory pool, and the MultiAgentTrainer
+    that coordinates training across all 50 agents.
+
+
+APPENDIX C: EXPERIMENTAL CONFIGURATION
+--------------------------------------------------------------------------------
+
++------------------------------+-----------+
+| Parameter                    | Value     |
++------------------------------+-----------+
+| Network Nodes                | 50        |
+| Network Edges                | 100       |
+|                              |(bidirect.)|
+| Topology Model               | BRITE     |
+|                              |(Barabasi- |
+|                              | Albert)   |
+| Training Episodes            | 3,000     |
+| Random Seed                  | 42        |
+| Max Steps/Episode            | 500       |
+| DT Grid Resolution           | 41 x 41  |
+| Jamming Radius               | 10 DT     |
+|                              | units     |
+| Scenario Mix                 | 50% jammed|
+|                              | + 50%     |
+|                              | normal    |
+| Anomaly Training Samples     | 2,000     |
+|                              | normal    |
+|                              | scenarios |
+| Dataset Number               | 0         |
+| Coordinate Scaling Factor    | 0.4       |
+| RSS Reference Level          | -70 dBm   |
+| Anomaly Threshold            | mu + 2*   |
+|                              | sigma     |
++------------------------------+-----------+
+
+
+APPENDIX D: HYPERPARAMETER SENSITIVITY
+--------------------------------------------------------------------------------
+
+The reward function parameters were selected based on preliminary experiments
+with the following considerations:
+
+Anomaly Dampening (alpha = 0.3):
+    * alpha = 0.1: Insufficient dampening; agents do not adequately avoid
+      anomalous areas.
+    * alpha = 0.3: Balanced performance; agents learn to avoid high-anomaly
+      areas while still making reasonable routing progress.
+    * alpha = 0.5: Excessive dampening; agents become overly cautious and take
+      unnecessarily long paths to avoid areas with even mild anomaly scores.
+
+Jamming Penalty (lambda = 0.5):
+    * lambda = 0.2: Insufficient penalty; agents occasionally route through
+      jammed nodes when it provides a shorter path.
+    * lambda = 0.5: Effective deterrent; agents consistently avoid jammed nodes
+      in most scenarios.
+    * lambda = 1.0: Excessive penalty; agents make significantly suboptimal
+      routing choices to avoid any proximity to jammed areas.
+
+Resilience Bonus (0.3):
+    * Bonus = 0.1: Minimal impact on routing behaviour; insufficient incentive
+      for proactive jamming avoidance.
+    * Bonus = 0.3: Meaningful incentive that encourages jam-free paths without
+      dominating the reward signal.
+    * Bonus = 0.5: Strong incentive but can lead to excessively long paths in
+      scenarios where short paths near jammed areas are available.
+
+Shared Experience Ratio (60/40):
+    * 80/20 (more own): Slower collective learning but more stable individual
+      policies.
+    * 60/40 (balanced): Good balance between individual specialization and
+      collective knowledge sharing.
+    * 40/60 (more shared): Faster collective convergence but risk of
+      homogeneous policies that do not account for position-specific routing
+      needs.
+
+
+APPENDIX E: MATHEMATICAL NOTATION
+--------------------------------------------------------------------------------
+
++----------+------------------------------------------------------------------+
+| Symbol   | Description                                                      |
++----------+------------------------------------------------------------------+
+| G        | Network graph G = (V, E)                                         |
+| V        | Set of nodes (|V| = 50)                                          |
+| E        | Set of edges (|E| = 100 bidirectional)                           |
+| N_i      | Neighbourhood set of node i                                      |
+| h_i      | Feature/embedding vector for node i                              |
+| x_i      | Raw input feature vector for node i (7-dimensional)              |
+| alpha_ij | Attention coefficient from node j to node i                      |
+| W        | Learnable weight matrix in GAT layers                            |
+| a        | Learnable attention parameter vector                             |
+| Q(s,a)   | Q-value function: expected cumulative reward for state s,        |
+|          | action a                                                         |
+| theta    | Neural network parameters                                        |
+| epsilon  | Exploration rate in epsilon-greedy strategy                       |
+| gamma    | Discount factor for future rewards                               |
+| alpha    | Learning rate (also: anomaly dampening coefficient)              |
+| tau      | Soft update coefficient for target network                       |
+| lambda   | Jamming penalty coefficient                                      |
+| mu       | Mean of normal measurement differences                           |
+| sigma    | Standard deviation of normal measurement differences             |
+| R_base   | Base reward from routing progress                                |
+| R_damp   | Anomaly-dampened reward                                          |
+| R_jam    | Jamming penalty                                                  |
+| R_resil  | Resilience bonus                                                 |
+| RSS      | Received Signal Strength (dBm)                                   |
+| d(u,v)   | Shortest path distance from node u to node v                     |
+| B_i      | Replay buffer for agent i                                        |
++----------+------------------------------------------------------------------+
+
+================================================================================

@@ -1,0 +1,181 @@
+================================================================================
+                     CHAPTER 7: FUTURE WORK
+================================================================================
+
+This chapter outlines directions for future research that can extend and
+improve the proposed framework.
+
+
+7.1 DYNAMIC TOPOLOGY SUPPORT
+--------------------------------------------------------------------------------
+
+The current framework operates on a static network topology where nodes do not
+move, join, or leave during training. Extending the framework to handle dynamic
+topologies would significantly broaden its applicability. Key challenges include:
+
+    * Adapting the GAT architecture to handle variable numbers of nodes. The
+      current fully connected layers require a fixed number of nodes (50). A
+      possible solution is to use graph-level pooling operations (such as mean
+      or attention-based pooling) that produce fixed-size representations
+      regardless of the number of nodes.
+
+    * Developing mechanisms for new agents to quickly learn effective policies
+      when nodes join the network. Transfer learning from existing agents with
+      similar connectivity patterns could accelerate this process.
+
+    * Handling graceful agent retirement when nodes leave the network, ensuring
+      that remaining agents can adapt their routing strategies accordingly.
+
+Dynamic topology support would make the framework applicable to mobile ad-hoc
+networks (MANETs) and disaster response scenarios where network topology
+changes frequently.
+
+
+7.2 REAL-TIME DIGITAL TWIN UPDATES
+--------------------------------------------------------------------------------
+
+The current implementation uses pre-generated radio environment data from the
+Krause et al. dataset. Integrating real-time radio measurements from physical
+network deployments would enable true closed-loop Digital Twin operation where:
+
+    * Physical network sensors continuously monitor the radio environment and
+      transmit measurements to the Digital Twin.
+
+    * The Digital Twin processes these measurements in real-time, updating
+      anomaly scores and jamming probabilities.
+
+    * Updated environmental features are immediately available to the routing
+      agents, enabling truly real-time adaptive routing.
+
+Challenges include handling measurement noise, communication delays between
+sensors and the Digital Twin, and computational efficiency of real-time anomaly
+detection.
+
+
+7.3 ADVANCED JAMMING MODELS
+--------------------------------------------------------------------------------
+
+The current framework evaluates against a single jamming model (constant
+jamming with FSPL). Future work should incorporate more sophisticated jamming
+strategies:
+
+    * Reactive Jammers: Jammers that only transmit when they detect legitimate
+      network activity. Reactive jammers are more energy-efficient and harder
+      to detect than constant jammers, requiring the framework to handle
+      intermittent jamming that appears only during active routing.
+
+    * Smart Jammers: Jammers that adapt their strategy based on the routing
+      protocol's behaviour. This creates an adversarial game between the routing
+      agents and the jammer, which could be modelled as a minimax problem or
+      a multi-agent competitive game.
+
+    * Mobile Jammers: Jammers that change position over time, creating
+      time-varying jammed areas. The framework would need to handle temporal
+      dynamics in the jamming pattern.
+
+    * Multi-Jammer Scenarios: Coordinated attacks using multiple jammers that
+      can create complex interference patterns and potentially isolate portions
+      of the network.
+
+
+7.4 SCALABILITY EVALUATION
+--------------------------------------------------------------------------------
+
+Evaluating the framework on larger networks (100, 200, 500 nodes) would provide
+important insights into multi-agent scaling behaviour:
+
+    * How does the training time scale with the number of nodes and agents?
+    * Does the shared experience replay pool require larger capacity for
+      bigger networks?
+    * Do hub nodes in larger scale-free networks create bottlenecks that
+      require special attention?
+    * Is the 60/40 split between own and shared experiences still optimal for
+      larger agent populations?
+
+Scalability evaluation would also reveal whether the current architecture is
+practical for real-world deployments where mesh networks can have hundreds or
+thousands of nodes.
+
+
+7.5 TRANSFER LEARNING
+--------------------------------------------------------------------------------
+
+Investigating the transferability of learned policies across different
+topologies and jamming scenarios would be valuable for practical deployment:
+
+    * Can policies learned on one Barabasi-Albert topology transfer to a
+      different Barabasi-Albert topology of the same size?
+    * Can policies transfer across different topology models (e.g., from
+      Barabasi-Albert to Waxman or random geometric graphs)?
+    * Can policies learned under one jamming intensity transfer to different
+      jamming intensities?
+
+The GAT architecture's permutation invariance (the attention mechanism is
+independent of node ordering) should theoretically facilitate transfer learning,
+as the learned attention patterns depend on structural and feature-based
+similarities rather than specific node identities.
+
+
+7.6 MULTI-OBJECTIVE OPTIMIZATION
+--------------------------------------------------------------------------------
+
+The current framework implicitly balances multiple objectives (path length,
+jamming avoidance, resilience) through the multi-component reward function.
+Future work could explicitly optimize for multiple objectives using:
+
+    * Pareto-optimal policy search, which identifies the set of policies that
+      are optimal for different trade-off points between competing objectives.
+
+    * Constraint-based optimization, where certain objectives are treated as
+      hard constraints (e.g., "never exceed 5 hops") while others are
+      optimized.
+
+    * Multi-objective reward decomposition, where separate agents or network
+      heads are dedicated to different objectives, and their recommendations
+      are combined through a learned or configurable weighting scheme.
+
+Additional objectives could include energy efficiency (minimizing the total
+transmit power along the path), load balancing (distributing traffic evenly
+across the network), and security (maximizing the difficulty of traffic
+analysis).
+
+
+7.7 HARDWARE TESTBED VALIDATION
+--------------------------------------------------------------------------------
+
+Deploying and evaluating the framework on a physical wireless mesh network
+testbed would validate the simulation results and identify practical challenges
+not captured by simulation:
+
+    * Real hardware effects: antenna patterns, multi-path fading, co-channel
+      interference from non-network sources.
+    * Computational constraints: running the GAT model and agent policies on
+      actual mesh routers with limited processing power.
+    * Communication overhead: the cost of distributing Digital Twin data and
+      shared experiences across the physical network.
+    * Latency constraints: ensuring that routing decisions can be made within
+      the time constraints of real packet forwarding.
+
+A testbed using commodity WiFi hardware (e.g., Raspberry Pi-based mesh nodes)
+could provide a cost-effective platform for initial hardware validation.
+
+
+7.8 PARTIAL OBSERVABILITY
+--------------------------------------------------------------------------------
+
+The current framework provides each agent with a global view of the network
+through the GAT embeddings (which aggregate information from all nodes). In
+practice, each node may only have access to local neighbourhood information.
+Implementing true partial observability would require:
+
+    * Limiting each agent's observation to its k-hop neighbourhood (e.g., k=2).
+    * Using message-passing protocols for agents to share relevant information
+      with neighbours.
+    * Developing communication-efficient representations that enable effective
+      routing decisions with limited global view.
+
+Partial observability would make the framework more realistic and potentially
+more scalable, as each agent would process a smaller subgraph rather than the
+entire network.
+
+================================================================================

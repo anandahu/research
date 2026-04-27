@@ -1,0 +1,136 @@
+================================================================================
+                          REFERENCES
+================================================================================
+
+[1]  S. S. Bhavanasi, L. Pappone, and F. Esposito, "Dealing with Changes:
+     Resilient Routing via Graph Neural Networks and Multi-Agent Deep
+     Reinforcement Learning," submitted to IEEE TNSM, Special Issue on
+     Reliable Networks, 2023.
+
+[2]  A. Krause, M. D. Khursheed, P. Schulz, F. Burmeister, and G. Fettweis,
+     "Digital Twin of the Radio Environment: A Novel Approach for Anomaly
+     Detection in Wireless Networks," Proc. 2023 IEEE Globecom Workshops,
+     Kuala Lumpur, Malaysia, Dec. 2023.
+
+[3]  V. Mnih et al., "Human-level control through deep reinforcement
+     learning," Nature, vol. 518, no. 7540, pp. 529-533, Feb. 2015.
+
+[4]  T. N. Kipf and M. Welling, "Semi-Supervised Classification with Graph
+     Convolutional Networks," Proc. ICLR, Toulon, France, Apr. 2017.
+
+[5]  P. Velickovic, G. Cucurull, A. Casanova, A. Romero, P. Lio, and
+     Y. Bengio, "Graph Attention Networks," Proc. ICLR, Vancouver, Canada,
+     Apr. 2018.
+
+[6]  Z. Jin, Y. Wang, X. Li, and H. Chen, "Deep Reinforcement
+     Learning-based Resilient Routing for Urban Emergency Communication
+     Networks," IEEE Trans. Vehicular Technology, vol. 74, no. 1,
+     pp. 15-28, 2025.
+
+[7]  R. S. Sutton and A. G. Barto, Reinforcement Learning: An Introduction,
+     2nd ed. Cambridge, MA: MIT Press, 2018.
+
+[8]  Z. Wu, S. Pan, F. Chen, G. Long, C. Zhang, and P. S. Yu, "A
+     Comprehensive Survey on Graph Neural Networks," IEEE Trans. NNLS,
+     vol. 32, no. 1, pp. 4-24, Jan. 2021.
+
+[9]  M. M. Olsson, R. Barr, R. Hague, C. Sherburn, and J. Li, "Digital
+     Twin Technology: An Overview," Annals of the CIRP, vol. 69, no. 1,
+     pp. 629-642, 2020.
+
+[10] L. Busoniu, R. Babuska, and B. De Schutter, "A Comprehensive Survey of
+     Multiagent Reinforcement Learning," IEEE Trans. SMC-C, vol. 38, no. 2,
+     pp. 156-172, Mar. 2008.
+
+[11] I. F. Akyildiz, X. Wang, and W. Wang, "Wireless mesh networks: a
+     survey," Computer Networks, vol. 47, no. 4, pp. 445-487, Mar. 2005.
+
+[12] W. Xu, W. Trappe, Y. Zhang, and T. Wood, "The Feasibility of Launching
+     and Detecting Jamming Attacks in Wireless Networks," Proc. ACM MobiHoc,
+     Urbana-Champaign, IL, USA, May 2005, pp. 46-57.
+
+[13] A. Medina, A. Lakhina, I. Matta, and J. Byers, "BRITE: An Approach to
+     Universal Topology Generation," Proc. MASCOTS, Cincinnati, OH, USA,
+     Aug. 2001.
+
+[14] M. Fey and J. E. Lenssen, "Fast Graph Representation Learning with
+     PyTorch Geometric," ICLR Workshop, 2019.
+
+[15] A. Paszke et al., "PyTorch: An Imperative Style, High-Performance Deep
+     Learning Library," NeurIPS, vol. 32, 2019.
+
+[16] G. Brockman et al., "OpenAI Gym," arXiv preprint arXiv:1606.01540,
+     2016.
+
+[17] H. Van Hasselt, A. Guez, and D. Silver, "Deep Reinforcement Learning
+     with Double Q-learning," Proc. AAAI, vol. 30, no. 1, Phoenix, AZ,
+     USA, Feb. 2016.
+
+[18] A. Hagberg, P. Swart, and D. S Chult, "Exploring network structure,
+     dynamics, and function using NetworkX," Proc. SciPy, Pasadena, CA,
+     USA, 2008, pp. 11-15.
+
+[19] Z. Wang et al., "Dueling Network Architectures for Deep Reinforcement
+     Learning," Proc. ICML, New York, NY, USA, Jun. 2016.
+
+[20] T. Schaul, J. Quan, I. Antonoglou, and D. Silver, "Prioritized
+     Experience Replay," Proc. ICLR, San Juan, Puerto Rico, May 2016.
+
+[21] D. P. Kingma and J. Ba, "Adam: A Method for Stochastic Optimization,"
+     Proc. ICLR, San Diego, CA, USA, May 2015.
+
+[22] M. Grondman, L. Busoniu, G. A. D. Lopes, and R. Babuska, "A Survey
+     of Actor-Critic Reinforcement Learning," IEEE Trans. SMC-C, vol. 42,
+     no. 6, pp. 1291-1307, Nov. 2012.
+
+[23] A. Albert and A. Barabasi, "Statistical mechanics of complex
+     networks," Reviews of Modern Physics, vol. 74, no. 1, pp. 47-97,
+     Jan. 2002.
+
+[24] C. Perkins, E. Belding-Royer, and S. Das, "Ad hoc On-Demand Distance
+     Vector (AODV) Routing," IETF RFC 3561, Jul. 2003.
+
+[25] T. Clausen and P. Jacquet, "Optimized Link State Routing Protocol
+     (OLSR)," IETF RFC 3626, Oct. 2003.
+
+[26] J. Schulman, F. Wolski, P. Dhariwal, A. Radford, and O. Klimov,
+     "Proximal Policy Optimization Algorithms," arXiv preprint
+     arXiv:1707.06347, 2017.
+
+[27] T. Rashid, M. Samvelyan, C. S. de Witt, G. Farquhar, J. Foerster,
+     and S. Whiteson, "QMIX: Monotonic Value Function Factorisation for
+     Deep Multi-Agent Reinforcement Learning," Proc. ICML, Stockholm,
+     Sweden, Jul. 2018.
+
+[28] C. Yu, A. Velu, E. Vinitsky, J. Gao, Y. Wang, A. Bayen, and Y. Wu,
+     "The Surprising Effectiveness of PPO in Cooperative Multi-Agent
+     Games," NeurIPS, vol. 35, 2022.
+
+[29] J. Gilmer, S. S. Schoenholz, P. F. Riley, O. Vinyals, and G. E.
+     Dahl, "Neural Message Passing for Quantum Chemistry," Proc. ICML,
+     Sydney, Australia, Aug. 2017.
+
+[30] S. Brody, U. Alon, and E. Yahav, "How Attentive are Graph Attention
+     Networks?," Proc. ICLR, Apr. 2022.
+
+[31] A. Almasan et al., "RouteNet-Fermi: Network Modeling with Graph
+     Neural Networks," arXiv preprint arXiv:2212.12070, 2022.
+
+[32] G. Stampa, M. Arias, D. Sanchez-Charles, V. Muntes-Mulero, and
+     A. Cabellos, "A Deep-Reinforcement Learning Approach for Software-
+     Defined Networking Routing Optimization," arXiv preprint
+     arXiv:1709.07080, 2017.
+
+[33] S. Munikoti, D. Agarwal, L. Das, M. Halappanavar, and B. Natarajan,
+     "Challenges and Opportunities in Deep Reinforcement Learning with
+     Graph Neural Networks: A Comprehensive Review of Algorithms and
+     Applications," IEEE Trans. Neural Networks and Learning Systems,
+     2023.
+
+[34] C. D. Watkins and P. Dayan, "Q-learning," Machine Learning, vol. 8,
+     no. 3-4, pp. 279-292, 1992.
+
+[35] M. Grieves, "Digital Twin: Manufacturing Excellence through Virtual
+     Factory Replication," White Paper, 2014 (concept introduced 2002).
+
+================================================================================
