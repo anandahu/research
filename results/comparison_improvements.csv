@@ -1,7 +1,0 @@
-timestamp,dt_model,baseline_model,reward_improvement,success_rate_improvement_pp,jammed_steps_reduction,path_length_reduction,pdr_improvement
-20260203_013945,GCN + DT (7 features),GCN Baseline (4 features),0.737,0.0,0.12,1.84,0.0
-20260208_054348,GCN + DT (7 features),GCN Baseline (4 features),-0.15,-1.0,-0.04,-0.1,0.0
-20260218_004227,Multi-Agent GCN+DT (50 agents),GCN Baseline (4 features),-9.415,-5.0,-2.15,-20.77,0.0
-20260218_104707,Multi-Agent GCN+DT (50 agents),GCN Baseline (4 features),6.593,-31.0,0.02,16.43,0.0
-20260304_005245,Multi-Agent GCN+DT (50 agents),GCN Baseline (4 features),9.488,18.0,1.09,23.9,0.0
-20260305_025316,Multi-Agent GAT+DT (50 agents),GAT Baseline (4 features),19.119,22.0,1.41,45.1,0.0

@@ -1,3 +1,0 @@
-timestamp,model,episodes,training_time_min,avg_reward,success_rate,avg_path_length,avg_jammed_steps,avg_pdr
-20260305_025316,Multi-Agent GAT+DT (50 agents),3000,36.83,0.949,0.88,3.54,0.37,1.0
-20260305_025316,GAT Baseline (4 features),3000,84.23,-18.17,0.66,48.64,1.78,1.0

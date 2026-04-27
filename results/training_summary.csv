@@ -1,3 +1,0 @@
-timestamp,model,episodes,training_time_min,avg_reward,max_reward,min_reward,success_rate,avg_path_length,avg_jammed_steps,avg_latency,avg_bandwidth,avg_pdr,final_50_avg_reward
-20260305_004941,GAT_DTAware,5,0.31,-38.496,0.233,-81.559,0.2,89.8,7.8,21.34,1.0,1.0,
-20260305_005050,MultiAgent_GAT_DTAware,5,0.29,-34.993,1.01,-114.679,0.2,85.0,3.8,19.9329,1.0,1.0,
